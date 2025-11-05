@@ -282,7 +282,7 @@ export class Spreadsheet {
   isRedo (): boolean {
     return this.histories2.length > 0
   }
-  redo (cb: StandardCallback): boolean { // Redo 로직 부분
+  redo (cb: StandardCallback): boolean { // Redo 로직 부분 여기서 c++과 동기 필요
     const { histories, histories2 } = this
     if (histories2.length > 0) {
       const history = histories2.pop()
@@ -298,7 +298,7 @@ export class Spreadsheet {
   isUndo (): boolean {
     return this.histories.length > 0
   }
-  undo (cb: StandardCallback): boolean { // Undo 로직 부분
+  undo (cb: StandardCallback): boolean { // Undo 로직 부분 여기서 c++과 동기 필요
     const { histories, histories2 } = this
     // console.log('histories:', histories, histories2)
     if (histories.length > 0) {
@@ -311,15 +311,15 @@ export class Spreadsheet {
     }
     return this.isUndo()
   }
-
+  // 얘 로직 신경쓸 필요 없이 redo/undo c++측과 동기화 가능
   resetByHistory (v: History, cb: StandardCallback, state: 'undo' | 'redo') { // 실제로 동작하는 곳 History만 C++에서 받은 데이터로 만들고 나머지는 그대로 사용해도 괜찮을듯.
     // console.log('history: ', history)
     v.values.forEach(([keys, oldValue, value]) => {
       if (v.type === 'cells') {
-        const v = state === 'undo' ? oldValue : value
+        const v = state === 'undo' ? oldValue : value // undo일 땐 이전 값으로, redo일 땐 다음 값으로
         const oldCell = this.getCell(keys[0], keys[1])
-        if (!oldCell) {
-          if (keys.length === 3) {
+        if (!oldCell) {// 빈 셀에 새로 쓴 기록을 복원하는 경우 다시 비운다 nValue: Cell == {}
+          if (keys.length === 3) {// 복붙으로 쓴 데이터냐, 직접 입력한 데이터냐에 따라 keys.length === 3 / 직접 입력 === 2 로 구분하여 처리함
             if (v) {
               const nValue: Cell = {}
               nValue[keys[2]] = v

@@ -79,7 +79,7 @@ export class LocalSpreadsheet {
     return this
   }
 
-  change (cb: (data: SpreadsheetData) => void): LocalSpreadsheet { // 이 change에서 cb을 저장해두고 c++로 데이터 보낸 다음 받아와서 cb 호출하면 되는 부분?!
+  change (cb: (data: SpreadsheetData) => void): LocalSpreadsheet { // 얘는 콜백 지정일 뿐, 아래쪽 4개의 change에서 c++과 셀 데이터 동기화 필요
     this._change = cb
     return this;
   }
@@ -94,7 +94,7 @@ export class LocalSpreadsheet {
     ]).el);
   }
 
-  private toolbarChange (k: keyof Cell, v: any) {
+  private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     if (k === 'merge') {
       this.table.merge();
       console.log('merge')
@@ -124,21 +124,21 @@ export class LocalSpreadsheet {
     this.table.setCellAttr(k, v);
   }
 
-  private editorbarChange (v: Cell) {
+  private editorbarChange (v: Cell) { // 위쪽의 입력바를 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     console.log('editorbarChange')
     console.log('LocalSpreadSheet: ', this)
     console.log('Cell: ', v)
-    this.table.setValueWithText(v)
+    this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
 
-  private editorChange (v: Cell) {
+  private editorChange (v: Cell) { // 셀을 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     console.log('editorChange')
     console.log('LocalSpreadSheet: ', this)
     console.log('Cell: ', v)
     this.editorbar && this.editorbar.setValue(v)
   }
 
-  private clickCell (rindex: number, cindex: number, v: Cell | null) {
+  private clickCell (rindex: number, cindex: number, v: Cell | null) { // 셀 편집 관련 다 여기 거쳐서 감
     console.log('clickCell')
     console.log('LocalSpreadSheet: ', this)
     console.log('rindex: ', rindex, ', cindex: ', cindex)
