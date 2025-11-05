@@ -104,6 +104,8 @@ export class Editor {
     } else {
       this.value = {text: v}
     }
+
+    console.log('event: ', evt)
     this.change(this.value)
     this.autocomplete(v);
 
