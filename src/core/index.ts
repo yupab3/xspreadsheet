@@ -282,7 +282,7 @@ export class Spreadsheet {
   isRedo (): boolean {
     return this.histories2.length > 0
   }
-  redo (cb: StandardCallback): boolean {
+  redo (cb: StandardCallback): boolean { // Redo 로직 부분
     const { histories, histories2 } = this
     if (histories2.length > 0) {
       const history = histories2.pop()
@@ -298,7 +298,7 @@ export class Spreadsheet {
   isUndo (): boolean {
     return this.histories.length > 0
   }
-  undo (cb: StandardCallback): boolean {
+  undo (cb: StandardCallback): boolean { // Undo 로직 부분
     const { histories, histories2 } = this
     // console.log('histories:', histories, histories2)
     if (histories.length > 0) {
@@ -312,7 +312,7 @@ export class Spreadsheet {
     return this.isUndo()
   }
 
-  resetByHistory (v: History, cb: StandardCallback, state: 'undo' | 'redo') {
+  resetByHistory (v: History, cb: StandardCallback, state: 'undo' | 'redo') { // 실제로 동작하는 곳 History만 C++에서 받은 데이터로 만들고 나머지는 그대로 사용해도 괜찮을듯.
     // console.log('history: ', history)
     v.values.forEach(([keys, oldValue, value]) => {
       if (v.type === 'cells') {

@@ -60,6 +60,7 @@ export class LocalSpreadsheet {
       return document.documentElement.clientHeight - 24 - 41 - 26
     }
     let bodyWidthFn = (): number => {
+      console.log("Width: ", this.bindEl.offsetWidth)
       return this.bindEl.offsetWidth
     }
     this.table = new Table(this.ss, Object.assign({height: bodyHeightFn, width: bodyWidthFn, mode: this.options.mode}));
@@ -73,7 +74,7 @@ export class LocalSpreadsheet {
     this.render();
   }
 
-  loadData (data: SpreadsheetData): LocalSpreadsheet {
+  loadData (data: SpreadsheetData): LocalSpreadsheet { // 파일 읽어오고 나서 여기로 전달하면 데이터 저장 가능
     // reload until waiting main thread
     setTimeout(() => {
       this.ss.data = data
@@ -82,7 +83,7 @@ export class LocalSpreadsheet {
     return this
   }
 
-  change (cb: (data: SpreadsheetData) => void): LocalSpreadsheet {
+  change (cb: (data: SpreadsheetData) => void): LocalSpreadsheet { // 이 change에서 cb을 저장해두고 c++로 데이터 보낸 다음 받아와서 cb 호출하면 되는 부분?!
     this._change = cb
     return this;
   }
