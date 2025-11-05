@@ -35,13 +35,14 @@ export class LocalSpreadsheet {
     this.bindEl && (this.bindEl.innerHTML = '')
 
     this.ss = new Spreadsheet(options);
-    // console.log('::::>>>select:', this.ss.select)
+    console.log('::::>>>select:', this.ss.select)
     if (this.options.mode === 'design') {
       this.editorbar = new Editorbar()
       this.editorbar.change = (v) => this.editorbarChange(v)
 
       this.toolbar = new Toolbar(this.ss);
       this.toolbar.change = (key, v) => this.toolbarChange(key, v)
+      console.log("Toolbar: ", this.toolbar)
       this.toolbar.undo = () => {
         // console.log('undo::')
         return this.table.undo()
