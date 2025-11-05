@@ -48,6 +48,7 @@ export declare class Spreadsheet {
     private cutSelect;
     change: (data: SpreadsheetData) => void;
     constructor(options?: SpreadsheetOptions);
+    logHistories(): void;
     buildSelect(startTarget: any, endTarget: any): Select;
     defaultRowHeight(): number;
     defaultColWidth(): number;

@@ -74,6 +74,11 @@ export class Spreadsheet {
     }
   }
 
+  logHistories(): void {
+    console.log("Undo: ", this.histories);
+    console.log("Redo: ", this.histories2);
+  }
+
   // build select
   buildSelect (startTarget: any, endTarget: any) {
     const startAttrs = getElementAttrs(startTarget)
