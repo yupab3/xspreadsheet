@@ -251,6 +251,7 @@ export class Table {
   }
 
   setValueWithText (v: Cell) {
+    console.log('여기냐? 1')
     // console.log('setValueWithText: v = ', v)
     if (this.currentIndexs) {
       this.ss.cellText(v.text, (rindex, cindex, cell) => {
@@ -261,12 +262,14 @@ export class Table {
   }
 
   setTdWithCell (rindex: number, cindex: number, cell: Cell, autoWordWrap = true) {
+    console.log('여기냐? 2')
     this.setTdStyles(rindex, cindex, cell);
     this.setRowHeight(rindex, cindex, autoWordWrap);
     this.td(rindex, cindex).html(this.renderCell(rindex, cindex, cell));
   }
 
   setCellAttr (k: keyof Cell, v: any) {
+    console.log('여기냐? 3')
     // console.log('::k:', k, '::v:', v)
     this.ss.cellAttr(k, v, (rindex, cindex, cell) => {
       // console.log(':rindex:', rindex, '; cindex:', cindex, '; cell: ', cell)
@@ -287,6 +290,7 @@ export class Table {
     })
   }
   private setTdStylesAndAttrsAndText (rindex: number, cindex: number, cell: Cell) {
+    console.log('여기냐? 4')
     let td = this.td(rindex, cindex);
     this.setTdStyles(rindex, cindex, cell);
     this.setTdAttrs(rindex, cindex, cell);
