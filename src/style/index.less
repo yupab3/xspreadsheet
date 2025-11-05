@@ -11,7 +11,11 @@ body {
   user-select: none;
   -moz-user-select: none;
   font-family: Roboto, Helvetica, Arial, sans-serif;
-  box-sizing: content-box;
+  // box-sizing: content-box;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0; // flex/grid 자식일 때 반드시 필요
   background: #fff;
 
   .spreadsheet-table {
