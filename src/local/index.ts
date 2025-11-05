@@ -35,14 +35,14 @@ export class LocalSpreadsheet {
     this.bindEl && (this.bindEl.innerHTML = '')
 
     this.ss = new Spreadsheet(options);
-    console.log('::::>>>select:', this.ss.select)
+    // console.log('::::>>>select:', this.ss.select)
     if (this.options.mode === 'design') {
       this.editorbar = new Editorbar()
       this.editorbar.change = (v) => this.editorbarChange(v)
 
       this.toolbar = new Toolbar(this.ss);
       this.toolbar.change = (key, v) => this.toolbarChange(key, v)
-      console.log("Toolbar: ", this.toolbar)
+      // console.log("Toolbar: ", this.toolbar)
       this.toolbar.undo = () => {
         // console.log('undo::')
         return this.table.undo()
@@ -81,8 +81,6 @@ export class LocalSpreadsheet {
 
   change (cb: (data: SpreadsheetData) => void): LocalSpreadsheet { // 이 change에서 cb을 저장해두고 c++로 데이터 보낸 다음 받아와서 cb 호출하면 되는 부분?!
     this._change = cb
-    console.log('LocalSpreadSheet: ', this)
-    console.log('callback func: ', cb)
     return this;
   }
 
@@ -99,27 +97,52 @@ export class LocalSpreadsheet {
   private toolbarChange (k: keyof Cell, v: any) {
     if (k === 'merge') {
       this.table.merge();
+      console.log('merge')
+      console.log('LocalSpreadSheet: ', this)
+      console.log('Cell: ', k)
+      console.log('any: ', v)
       return;
     } else if (k === 'clearformat') {
       this.table.clearformat();
+      console.log('clearformat')
+      console.log('LocalSpreadSheet: ', this)
+      console.log('Cell: ', k)
+      console.log('any: ', v)
       return ;
     } else if (k === 'paintformat') {
       this.table.copyformat();
+      console.log('paintformat')
+      console.log('LocalSpreadSheet: ', this)
+      console.log('Cell: ', k)
+      console.log('any: ', v)
       return ;
     }
-
+    console.log('setCellAttr')
+    console.log('LocalSpreadSheet: ', this)
+    console.log('Cell: ', k)
+    console.log('any: ', v)
     this.table.setCellAttr(k, v);
   }
 
   private editorbarChange (v: Cell) {
+    console.log('editorbarChange')
+    console.log('LocalSpreadSheet: ', this)
+    console.log('Cell: ', v)
     this.table.setValueWithText(v)
   }
 
   private editorChange (v: Cell) {
+    console.log('editorChange')
+    console.log('LocalSpreadSheet: ', this)
+    console.log('Cell: ', v)
     this.editorbar && this.editorbar.setValue(v)
   }
 
   private clickCell (rindex: number, cindex: number, v: Cell | null) {
+    console.log('clickCell')
+    console.log('LocalSpreadSheet: ', this)
+    console.log('rindex: ', rindex, ', cindex: ', cindex)
+    console.log('Cell: ', v)
     const cols = this.ss.cols()
     this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
     this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
