@@ -81,6 +81,8 @@ export class LocalSpreadsheet {
 
   change (cb: (data: SpreadsheetData) => void): LocalSpreadsheet { // 이 change에서 cb을 저장해두고 c++로 데이터 보낸 다음 받아와서 cb 호출하면 되는 부분?!
     this._change = cb
+    console.log('LocalSpreadSheet: ', this)
+    console.log('callback func: ', cb)
     return this;
   }
 
