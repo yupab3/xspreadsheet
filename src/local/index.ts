@@ -60,8 +60,9 @@ export class LocalSpreadsheet {
       return document.documentElement.clientHeight - 24 - 41 - 26
     }
     let bodyWidthFn = (): number => {
-      console.log("Width: ", this.bindEl.offsetWidth)
-      return this.bindEl.offsetWidth
+      const sheet = this.bindEl.querySelector('.spreadsheet') as HTMLElement | null;
+      const w = (sheet ?? this.bindEl).getBoundingClientRect().width;
+      return w | 792;
     }
     this.table = new Table(this.ss, Object.assign({height: bodyHeightFn, width: bodyWidthFn, mode: this.options.mode}));
     this.table.change = (data) => {
