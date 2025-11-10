@@ -251,7 +251,7 @@ export class Table {
   }
 
   setValueWithText (v: Cell) {
-    console.log('여기냐? 1')
+    // console.log('여기냐? 1')
     // console.log('setValueWithText: v = ', v)
     if (this.currentIndexs) {
       this.ss.cellText(v.text, (rindex, cindex, cell) => {
@@ -262,14 +262,14 @@ export class Table {
   }
 
   setTdWithCell (rindex: number, cindex: number, cell: Cell, autoWordWrap = true) {
-    console.log('여기냐? 2')
+    // console.log('여기냐? 2')
     this.setTdStyles(rindex, cindex, cell);
     this.setRowHeight(rindex, cindex, autoWordWrap);
     this.td(rindex, cindex).html(this.renderCell(rindex, cindex, cell));
   }
 
   setCellAttr (k: keyof Cell, v: any) {
-    console.log('여기냐? 3')
+    // console.log('여기냐? 3')
     // console.log('::k:', k, '::v:', v)
     this.ss.cellAttr(k, v, (rindex, cindex, cell) => {
       // console.log(':rindex:', rindex, '; cindex:', cindex, '; cell: ', cell)
@@ -290,7 +290,7 @@ export class Table {
     })
   }
   private setTdStylesAndAttrsAndText (rindex: number, cindex: number, cell: Cell) {
-    console.log('여기냐? 4')
+    // console.log('여기냐? 4')
     let td = this.td(rindex, cindex);
     this.setTdStyles(rindex, cindex, cell);
     this.setTdAttrs(rindex, cindex, cell);
@@ -445,7 +445,7 @@ export class Table {
     const cols = this.ss.cols()
     const td = this.td(rindex, cindex)
     let h = td.offset().height
-    console.log('h:', h)
+    // console.log('h:', h)
     const tdRowspan = td.attr('rowspan')
     if (tdRowspan) {
       for (let i = 1; i < parseInt(tdRowspan); i++) {
@@ -543,7 +543,7 @@ export class Table {
         h('th'),
         ...cols.map((col, index) => {
           let th = h('th').child(col.title).on('mouseover', (evt: Event) => {
-            console.log(evt)
+            // console.log(evt)
             this.colResizer && this.colResizer.set(evt.target, index, this.body.el.scrollLeft)
           });
           this.ths[index + ''] = th;
@@ -597,7 +597,7 @@ export class Table {
       const {select} = this.ss
       if (evt.button === 2) {
         // show contextmenu
-        console.log(':::evt:', evt)
+        // console.log(':::evt:', evt)
         this.contextmenu && this.contextmenu.set(evt)
         if (select && select.contains(rindex, cindex)) {
           return
