@@ -95,52 +95,44 @@ export class LocalSpreadsheet {
   }
 
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
-    // console.log('LocalSpreadSheet_BF: ', this)
-    // console.log('Cell: ', k)
-    // console.log('any: ', v)
+    console.log('Cell: ', k)
+    console.log('any: ', v)
     if (k === 'merge') {
       this.table.merge();
-      // console.log('merge')
+      console.log('merge')
       return;
     } else if (k === 'clearformat') {
       this.table.clearformat();
-      // console.log('clearformat')
+      console.log('clearformat')
       return ;
     } else if (k === 'paintformat') {
       this.table.copyformat();
-      // console.log('paintformat')
+      console.log('paintformat')
       return ;
     }
-    // console.log('setCellAttr')
+    console.log('setCellAttr')
     this.table.setCellAttr(k, v);
-    // console.log('LocalSpreadSheet_AF: ', this)
   }
 
   private editorbarChange (v: Cell) { // 위쪽의 입력바를 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
-    // console.log('editorbarChange')
-    // console.log('LocalSpreadSheet_BF: ', this)
-    // console.log('Cell: ', v)
+    console.log('Cell: ', v)
+    console.log('editorbarChange')
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
-    // console.log('LocalSpreadSheet_AF: ', this)
   }
 
   private editorChange (v: Cell) { // 셀을 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
-    // console.log('editorChange')
-    // console.log('LocalSpreadSheet_BF: ', this)
-    // console.log('Cell: ', v)
+    console.log('Cell: ', v)
+    console.log('editorChange')
     this.editorbar && this.editorbar.setValue(v)
-    // console.log('LocalSpreadSheet_AF: ', this)
   }
 
   private clickCell (rindex: number, cindex: number, v: Cell | null) { // 셀 편집 관련 다 여기 거쳐서 감
-    // console.log('clickCell')
-    // console.log('LocalSpreadSheet_BF: ', this)
-    // console.log('rindex: ', rindex, ', cindex: ', cindex)
-    // console.log('Cell: ', v)
+    console.log('rindex: ', rindex, ', cindex: ', cindex)
+    console.log('Cell: ', v)
+    console.log('clickCell')
     const cols = this.ss.cols()
     this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
     this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
-    // console.log('LocalSpreadSheet_AF: ', this)
   }
 
 }
