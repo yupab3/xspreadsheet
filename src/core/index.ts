@@ -81,6 +81,7 @@ export class Spreadsheet {
 
   // build select
   buildSelect (startTarget: any, endTarget: any) {
+    console.log('src/core/index.ts - buildSelect')
     const startAttrs = getElementAttrs(startTarget)
     const endAttrs = getElementAttrs(endTarget)
     // console.log(':::::::>>>', startAttrs, endAttrs)
@@ -123,20 +124,25 @@ export class Spreadsheet {
   }
 
   defaultRowHeight (): number {
+    console.log('src/core/index.ts - defaultRowHeight')
     return this.data.rowHeight || 22
   }
 
   defaultColWidth (): number {
+    console.log('src/core/index.ts - defaultColWidth')
     return this.data.colWidth || 100
   }
 
   copy (): void {
+    console.log('src/core/index.ts - copy')
     this.copySelect = this.select
   }
   cut (): void {
+    console.log('src/core/index.ts - cut')
     this.cutSelect = this.select
   }
   paste (cb: StandardCallback, state: 'copy' | 'cut' | 'copyformat', clear: StandardCallback): void {
+    console.log('src/core/index.ts - paste')
     let cselect = this.copySelect
     if (this.cutSelect) {
       cselect = this.cutSelect
@@ -168,6 +174,7 @@ export class Spreadsheet {
     }
   }
   insert (type: 'row' | 'col', amount: number, cb: StandardCallback) {
+    console.log('src/core/index.ts - insert')
     if (this.select) {
       const { cells } = this.data
       const [srindex, scindex] = this.select.start
@@ -225,6 +232,7 @@ export class Spreadsheet {
     startRow: number, startCol: number, stopRow: number, stopCol: number,
     seqCopy: boolean,
     cb: StandardCallback) {
+    console.log('src/core/index.ts - batchPaste')
     if (this.select) {
       const history = new History('cells')
       for (let i = startRow; i <= stopRow; i++) {
@@ -241,6 +249,7 @@ export class Spreadsheet {
   }
   private copyCell (srcRowIndex: number, srcColIndex: number, destRowIndex: number, destColIndex: number,
     state: 'seqCopy' | 'copy' | 'cut' | 'copyformat', cb: StandardCallback, clear: StandardCallback): [Cell | null, Cell | null] {
+    console.log('src/core/index.ts - copyCell')
     const srcCell = this.getCell(srcRowIndex, srcColIndex)
     const rowDiff = destRowIndex - srcRowIndex
     const colDiff = destColIndex - srcColIndex
@@ -280,9 +289,11 @@ export class Spreadsheet {
   }
 
   isRedo (): boolean {
+    console.log('src/core/index.ts - isRedo')
     return this.histories2.length > 0
   }
   redo (cb: StandardCallback): boolean { // Redo 로직 부분 여기서 c++과 동기 필요
+    console.log('src/core/index.ts - redo')
     const { histories, histories2 } = this
     if (histories2.length > 0) {
       const history = histories2.pop()
@@ -296,9 +307,11 @@ export class Spreadsheet {
   }
 
   isUndo (): boolean {
+    console.log('src/core/index.ts - isUndo')
     return this.histories.length > 0
   }
   undo (cb: StandardCallback): boolean { // Undo 로직 부분 여기서 c++과 동기 필요
+    console.log('src/core/index.ts - undo')
     const { histories, histories2 } = this
     // console.log('histories:', histories, histories2)
     if (histories.length > 0) {
@@ -313,6 +326,7 @@ export class Spreadsheet {
   }
   // 얘 로직 신경쓸 필요 없이 redo/undo c++측과 동기화 가능
   resetByHistory (v: History, cb: StandardCallback, state: 'undo' | 'redo') { // 실제로 동작하는 곳 History만 C++에서 받은 데이터로 만들고 나머지는 그대로 사용해도 괜찮을듯.
+    console.log('src/core/index.ts - resetByHistory')
     // console.log('history: ', history)
     v.values.forEach(([keys, oldValue, value]) => {
       if (v.type === 'cells') {
@@ -353,6 +367,7 @@ export class Spreadsheet {
   }
 
   clearformat (cb: StandardCallback) {
+    console.log('src/core/index.ts - clearformat')
     const { select } = this
     if (select !== null) {
       const history = new History('cells')
@@ -376,6 +391,7 @@ export class Spreadsheet {
    * @param other 其他单元格的回调函数
    */
   merge (ok: StandardCallback, cancel: StandardCallback, other: StandardCallback): void {
+    console.log('src/core/index.ts - merge')
     const { select } = this
     // console.log('data.before: ', this.data)
     if (select !== null && select.cellLen() > 1) {
@@ -430,6 +446,7 @@ export class Spreadsheet {
     }
   }
   cellAttr (key: keyof Cell, value: any, cb: StandardCallback): void {
+    console.log('src/core/index.ts - cellAttr')
     let v: Cell= {}
     v[key] = value
     const isDefault = value === this.data.cell[key]
@@ -449,6 +466,7 @@ export class Spreadsheet {
     this.change(this.data)
   }
   cellText (value: any, cb: StandardCallback): Cell | null {
+    console.log('src/core/index.ts - cellText')
     if (this.currentCellIndexes) {
       // this.addHistoryValues()
       const history = new History('cells')
@@ -465,6 +483,7 @@ export class Spreadsheet {
     return null
   }
   currentCell (indexes?: [number, number]): Cell | null {
+    console.log('src/core/index.ts - currentCell')
     if (indexes !== undefined) {
       this.currentCellIndexes = indexes
     }
@@ -473,6 +492,7 @@ export class Spreadsheet {
   }
 
   cell (rindex: number, cindex: number, v: any, isCopy = false): Cell {
+    console.log('src/core/index.ts - cell')
     this.data.cells = this.data.cells || {}
     this.data.cells[rindex] = this.data.cells[rindex] || {}
     this.data.cells[rindex][cindex] = this.data.cells[rindex][cindex] || {}
@@ -485,6 +505,7 @@ export class Spreadsheet {
   }
 
   getCell (rindex: number, cindex: number): Cell | null {
+    console.log('src/core/index.ts - getCell')
     if (this.data.cells && this.data.cells[rindex] && this.data.cells[rindex][cindex]) {
       return this.data.cells[rindex][cindex];
     }
@@ -492,13 +513,16 @@ export class Spreadsheet {
   }
 
   getFont (key: string | undefined) {
+    console.log('src/core/index.ts - getFont')
     return this.fonts.filter(it => it.key === key)[0]
   }
   getFormat (key: string | undefined) {
+    console.log('src/core/index.ts - getFormat')
     return this.formats.filter(it => it.key === key)[0]
   }
 
   row (index: number, v?: number): Row {
+    console.log('src/core/index.ts - row')
     const { data } = this;
     if (v !== undefined) {
       const history = new History('rows')
@@ -512,6 +536,7 @@ export class Spreadsheet {
   }
   // isData 是否返回数据的最大行数
   rows (isData: boolean): Array<Row> {
+    console.log('src/core/index.ts - rows')
     const { data } = this;
     let maxRow;
     if (isData) {
@@ -526,6 +551,7 @@ export class Spreadsheet {
   }
 
   col (index: number, v?: number): Col {
+    console.log('src/core/index.ts - col')
     const { data } = this;
     if (v !== undefined) {
       const history = new History('cols')
@@ -547,6 +573,7 @@ export class Spreadsheet {
     return ret
   }
   cols (): Array<Col> {
+    console.log('src/core/index.ts - cols')
     const { data } = this;
     let maxCol = mapIntMaxKeyWithDefault(26 * 2, data.cols);
     return range(maxCol, (index) => this.col(index));
@@ -554,10 +581,12 @@ export class Spreadsheet {
 }
 
 const mapIntMaxKey = function<T>(mapInt: MapInt<T>): number {
+  console.log('src/core/index.ts - mapIntMaxKey')
   return Math.max(...Object.keys(mapInt).map(s => parseInt(s)))
 }
 // methods
 const mapIntMaxKeyWithDefault = function<T>(max: number, mapInt: MapInt<T> | undefined): number {
+  console.log('src/core/index.ts - mapIntMaxKeyWithDefault')
   if (mapInt) {
     const m = mapIntMaxKey(mapInt)
     if (m > max) return m;
@@ -565,6 +594,7 @@ const mapIntMaxKeyWithDefault = function<T>(max: number, mapInt: MapInt<T> | und
   return max;
 }
 const mapIntFilter = function(obj: any, ...keys: Array<any>): any {
+  console.log('src/core/index.ts - mapIntFilter')
   const ret: any = {}
   if (obj){
     Object.keys(obj).forEach(e => {
@@ -576,6 +606,7 @@ const mapIntFilter = function(obj: any, ...keys: Array<any>): any {
   return ret
 }
 const range = function<T>(stop:number, cb: (index: number) => T): Array<T> {
+  console.log('src/core/index.ts - range')
   const ret = []
   for (let i = 0; i < stop; i++) {
     ret.push(cb(i))
@@ -583,6 +614,7 @@ const range = function<T>(stop:number, cb: (index: number) => T): Array<T> {
   return ret
 }
 const getElementAttrs = (target: any) => {
+  console.log('src/core/index.ts - getElementAttrs')
   const { offsetTop, offsetLeft, offsetHeight, offsetWidth } = target
   return {
     row: parseInt(target.getAttribute('row-index')),
@@ -596,6 +628,7 @@ const getElementAttrs = (target: any) => {
   }
 }
 const calcMinMaxCol = (cell: any, sRow: number, eRow: number, sCol: number, eCol: number) => {
+  console.log('src/core/index.ts - calcMinMaxCol')
   let minCol = sCol
   let maxCol = eCol
   // console.log(':::::::;start: ', maxCol, minCol)
@@ -628,6 +661,7 @@ const calcMinMaxCol = (cell: any, sRow: number, eRow: number, sCol: number, eCol
   return [minCol, maxCol]
 }
 const calcMinＭaxRow = (cell: any, sRow: number, eRow: number, sCol: number, eCol: number) => {
+  console.log('src/core/index.ts - calcMinＭaxRow')
   let minRow = sRow
   let maxRow = eRow
   for (let j = sCol; j <= eCol; j++) {

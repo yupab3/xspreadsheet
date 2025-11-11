@@ -19,16 +19,19 @@ export class Editorbar {
   }
 
   set (title: string, value: Cell | null) {
+    console.log('src/local/editorbar.ts - set')
     this.label.html(title)
     this.setValue(value)
   }
 
   setValue (value: Cell | null) {
+    console.log('src/local/editorbar.ts - setValue')
     this.value = value
     this.textarea.val(value && value.text || '')
   }
 
   input (evt: any) {
+    console.log('src/local/editorbar.ts - input')
     const v = evt.target.value
     
     if (this.value) {
@@ -36,8 +39,9 @@ export class Editorbar {
     } else {
       this.value = {text: v}
     }
+    // console.log('editorbar - input()')
+    // console.log('event:', evt)
     this.change(this.value)
-  
   }
 
 }

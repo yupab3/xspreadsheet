@@ -182,6 +182,7 @@ export class Table {
   }
 
   reload () {
+    console.log('src/local/table.ts - reload')
     this.firsttds = {}
     this.el.html('')
     this.el.children([
@@ -194,24 +195,28 @@ export class Table {
   }
   
   private moveLeft () {
+    console.log('src/local/table.ts - moveLeft')
     if (this.currentIndexs && this.currentIndexs[1] > 0) {
       this.currentIndexs[1] -= 1
       this.moveSelector('left')
     }
   }
   private moveUp () {
+    console.log('src/local/table.ts - moveUp')
     if (this.currentIndexs && this.currentIndexs[0] > 0) {
       this.currentIndexs[0] -= 1
       this.moveSelector('up')
     }
   }
   private moveDown () {
+    console.log('src/local/table.ts - moveDown')
     if (this.currentIndexs && this.currentIndexs[0] < this.ss.rows(this.options.mode === 'read').length) {
       this.currentIndexs[0] += 1
       this.moveSelector('down')
     }
   }
   private moveRight () {
+    console.log('src/local/table.ts - moveRight')
     if (this.currentIndexs && this.currentIndexs[1] < this.ss.cols().length) {
       this.currentIndexs[1] += 1
       this.moveSelector('right')
@@ -220,6 +225,7 @@ export class Table {
 
   // 移动选框
   private moveSelector (direction: 'right' | 'left' | 'up' | 'down') {
+    console.log('src/local/table.ts - moveSelector')
     if (this.currentIndexs) {
       const [rindex, cindex] = this.currentIndexs
       const td = this.td(rindex, cindex)
@@ -251,9 +257,9 @@ export class Table {
   }
 
   setValueWithText (v: Cell) {
-    // console.log('여기냐? 1')
-    // console.log('setValueWithText: v = ', v)
-    if (this.currentIndexs) {
+    console.log('src/local/table.ts - setValueWithText')
+    // console.log('v = ', v)
+    if (this.currentIndexs) { // 이 안에서 싹 날리고 currentIndexs랑 Cell 데이터로 요청 쏴주기 히스토리도 필요없음
       this.ss.cellText(v.text, (rindex, cindex, cell) => {
         this.td(rindex, cindex).html(this.renderCell(rindex, cindex, cell))
       })
@@ -262,15 +268,20 @@ export class Table {
   }
 
   setTdWithCell (rindex: number, cindex: number, cell: Cell, autoWordWrap = true) {
-    // console.log('여기냐? 2')
+    console.log('src/local/table.ts - setTdWithCell')
+    // console.log('rindex = ', rindex)
+    // console.log('cindex = ', cindex)
+    // console.log('cell = ', cell)
+    // console.log('autoWordWrap = ', autoWordWrap)
     this.setTdStyles(rindex, cindex, cell);
     this.setRowHeight(rindex, cindex, autoWordWrap);
     this.td(rindex, cindex).html(this.renderCell(rindex, cindex, cell));
   }
 
   setCellAttr (k: keyof Cell, v: any) {
-    // console.log('여기냐? 3')
-    // console.log('::k:', k, '::v:', v)
+    console.log('src/local/table.ts - setCellAttr')
+    // console.log('k = ', k)
+    // console.log('v = ', v)
     this.ss.cellAttr(k, v, (rindex, cindex, cell) => {
       // console.log(':rindex:', rindex, '; cindex:', cindex, '; cell: ', cell)
       this.setTdWithCell(rindex, cindex, cell, k === 'wordWrap' && v);
@@ -279,18 +290,25 @@ export class Table {
   }
 
   undo (): boolean {
+    console.log('src/local/table.ts - undo')
     return this.ss.undo((rindex, cindex, cell) => {
+      console.log('src/local/table.ts - undo callback')
       // console.log('>', rindex, ',', cindex, '::', cell)
       this.setTdStylesAndAttrsAndText(rindex, cindex, cell)
     })
   }
-  redo (): boolean {
+  redo (): boolean { //이거 ss단 바꾸는게 제일 단순할 지도..
+    console.log('src/local/table.ts - redo')
     return this.ss.redo((rindex, cindex, cell) => {
+      console.log('src/local/table.ts - redo callback')
       this.setTdStylesAndAttrsAndText(rindex, cindex, cell)
     })
   }
   private setTdStylesAndAttrsAndText (rindex: number, cindex: number, cell: Cell) {
-    // console.log('여기냐? 4')
+    console.log('src/local/table.ts - setTdStylesAndAttrsAndText')
+    // console.log('rindex = ', rindex)
+    // console.log('cindex = ', cindex)
+    // console.log('cell = ', cell)
     let td = this.td(rindex, cindex);
     this.setTdStyles(rindex, cindex, cell);
     this.setTdAttrs(rindex, cindex, cell);
@@ -299,24 +317,28 @@ export class Table {
   }
 
   copy () {
+    console.log('src/local/table.ts - copy')
     this.ss.copy();
     this.dashedSelector.set(this.selector);
     this.state = 'copy';
   }
 
   cut () {
+    console.log('src/local/table.ts - cut')
     this.ss.cut();
     this.dashedSelector.set(this.selector);
     this.state = 'cut';
   }
 
   copyformat () {
+    console.log('src/local/table.ts - copyformat')
     this.ss.copy();
     this.dashedSelector.set(this.selector);
     this.state = 'copyformat';
   }
 
   paste () {
+    console.log('src/local/table.ts - paste')
     // console.log('state: ', this.state, this.ss.select)
     if (this.state !== null && this.ss.select) {
       this.ss.paste((rindex, cindex, cell) => {
@@ -348,6 +370,7 @@ export class Table {
   }
 
   clearformat () {
+    console.log('src/local/table.ts - clearformat')
     this.ss.clearformat((rindex, cindex, cell) => {
       this.td(rindex, cindex)
         .removeAttr('rowspan')
@@ -358,6 +381,7 @@ export class Table {
   }
 
   merge () {
+    console.log('src/local/table.ts - merge')
     this.ss.merge((rindex, cindex, cell) => {
       // console.log(rindex, cindex, '>>>', this.table.td(rindex, cindex))
       this.setTdAttrs(rindex, cindex, cell).show(true)
@@ -371,6 +395,7 @@ export class Table {
 
   // insert
   insert (type: 'row' | 'col', amount: number) {
+    console.log('src/local/table.ts - insert')
     if (type === 'col') {
       // insert col
     } else if (type === 'row') {
@@ -382,17 +407,20 @@ export class Table {
   }
 
   td (rindex: number, cindex: number): Element {
+    console.log('src/local/table.ts - td')
     const td = this.tds[`${rindex}_${cindex}`]
     return td
   }
 
   private selectorChange () {
+    console.log('src/local/table.ts - selectorChange')
     if (this.state === 'copyformat') {
       this.paste();
     }
   }
 
   private selectorChangeCopy (evt: any, arrow: 'bottom' | 'top' | 'left' | 'right', startRow: number, startCol: number, stopRow: number, stopCol: number) {
+    console.log('src/local/table.ts - selectorChangeCopy')
     this.ss.batchPaste(arrow, startRow, startCol, stopRow, stopCol, evt.ctrlKey, (rindex, cindex, cell) => {
       this.setTdStyles(rindex, cindex, cell);
       this.setTdAttrs(rindex, cindex, cell);
@@ -401,6 +429,7 @@ export class Table {
   }
 
   private renderCell (rindex: number, cindex: number, cell: Cell | null): string {
+    console.log('src/local/table.ts - renderCell')
     if (cell) {
       const setKey = `${rindex}_${cindex}`
       // console.log('text:', setKey, cell.text && cell.text)
@@ -418,6 +447,7 @@ export class Table {
     return '';
   }
   private _renderCell (cell: Cell | null): string {
+    console.log('src/local/table.ts - _renderCell')
     if (cell) {
       let text = cell.text || '';
       return formulaRender(text, (rindex, cindex) => this._renderCell(this.ss.getCell(rindex, cindex)))
@@ -425,6 +455,7 @@ export class Table {
     return '';
   }
   private reRenderFormulaCells () {
+    console.log('src/local/table.ts - reRenderFormulaCells')
     // console.log('formulaCellIndex: ', this.formulaCellIndexs)
     this.formulaCellIndexs.forEach(it => {
       let rcindexes = it.split('_')
@@ -437,6 +468,7 @@ export class Table {
   }
 
   private setRowHeight (rindex: number, cindex: number, autoWordWrap: boolean) {
+    console.log('src/local/table.ts - setRowHeight')
     // console.log('rowHeight: ', this.td(rindex, cindex).offset().height, ', autoWordWrap:', autoWordWrap)
     // 遍历rindex行的所有单元格，计算最大高度
     if (autoWordWrap === false) {
@@ -458,15 +490,18 @@ export class Table {
   }
 
   private setTdStyles (rindex: number, cindex: number, cell: Cell): Element {
+    console.log('src/local/table.ts - setTdStyles')
     return this.td(rindex, cindex).styles(getStyleFromCell(cell), true)
   }
   private setTdAttrs (rindex: number, cindex: number, cell: Cell): Element {
+    console.log('src/local/table.ts - setTdAttrs')
     return this.td(rindex, cindex)
       .attr('rowspan', cell.rowspan || 1)
       .attr('colspan', cell.colspan || 1);
   }
 
   private changeRowHeight (index: number, h: number) {
+    console.log('src/local/table.ts - changeRowHeight')
     if (h <= this.ss.defaultRowHeight()) return
     this.ss.row(index, h)
     const firstTds = this.firsttds[index+'']
@@ -477,10 +512,12 @@ export class Table {
     this.editor && this.editor.reload()
   }
   private changeRowResizer (index: number, distance: number) {
+    console.log('src/local/table.ts - changeRowResizer')
     const h = this.ss.row(index).height + distance
     this.changeRowHeight(index, h);
   }
   private changeColResizer (index: number, distance: number) {
+    console.log('src/local/table.ts - changeColResizer')
     const w = this.ss.col(index).width + distance
     if (w <= 50) return
     this.ss.col(index, w)
@@ -493,6 +530,7 @@ export class Table {
   }
 
   private buildColGroup (lastColWidth: number): Element {
+    console.log('src/local/table.ts - buildColGroup')
     const cols = this.ss.cols();
     return h('colgroup').children([
       h('col').attr('width', '60'),
@@ -507,6 +545,7 @@ export class Table {
   }
 
   private buildFixedLeft (): Element {
+    console.log('src/local/table.ts - buildFixedLeft')
     const rows = this.ss.rows(this.options.mode === 'read');
     return h().class('spreadsheet-fixed')
     .style('width', '60px')
@@ -537,6 +576,7 @@ export class Table {
   }
 
   private buildHeader (): Element {
+    console.log('src/local/table.ts - buildHeader')
     const cols = this.ss.cols();
     const thead = h('thead').child(
       h('tr').children([
@@ -558,6 +598,7 @@ export class Table {
   }
 
   private mousedownCell (rindex: number, cindex: number) {
+    console.log('src/local/table.ts - mousedownCell')
     if (this.editor) {
       const editorValue = this.editor.value
       if (this.currentIndexs && this.editor.target && editorValue) {
@@ -585,11 +626,13 @@ export class Table {
   }
 
   private editCell(rindex: number, cindex: number) {
+    console.log('src/local/table.ts - editCell')
     const td = this.td(rindex, cindex)
     this.editor && this.editor.set(td.el, this.ss.currentCell())
   }
 
   private buildBody () {
+    console.log('src/local/table.ts - buildBody')
     const rows = this.ss.rows(this.options.mode === 'read');
     const cols = this.ss.cols();
 
@@ -659,12 +702,14 @@ export class Table {
 
   // 向尾部添加行
   private addRow (num = 1) {
+    console.log('src/local/table.ts - addRow')
     if (num > 0) {
 
     }
   }
 
   private firsttdsPush (index: number, el: Element) {
+    console.log('src/local/table.ts - firsttdsPush')
     this.firsttds[`${index}`] = this.firsttds[`${index}`] || []  
     this.firsttds[`${index}`].push(el)
   }

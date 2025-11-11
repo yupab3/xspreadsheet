@@ -69,16 +69,19 @@ export class Toolbar {
   }
 
   set (target: Element, cell: Cell | null) {
+    console.log('src/local/toolbar.ts - set')
     this.target = target
     this.setCell(cell)
   }
 
   private setCell (cell: Cell | null) {
+    console.log('src/local/toolbar.ts - setCell')
     this.currentCell = cell
     this.setCellStyle()
   }
 
   private setCellStyle () {
+    console.log('src/local/toolbar.ts - setCellStyle')
     const { target, currentCell, defaultCell, ss } = this
     // console.log(':::', currentCell)
     if (target) {
@@ -106,19 +109,24 @@ export class Toolbar {
   }
 
   setRedoAble (flag: boolean) {
+    console.log('src/local/toolbar.ts - setRedoAble')
     flag ? this.elRedo.able() : this.elRedo.disabled()
   }
 
   setUndoAble (flag: boolean) {
+    console.log('src/local/toolbar.ts - setUndoAble')
     flag ? this.elUndo.able() : this.elUndo.disabled()
   }
 
   private buildSeparator (): Element {
+    console.log('src/local/toolbar.ts - buildSeparator')
     return h().class('spreadsheet-item-separator')
   }
   private buildAligns (): Dropdown {
+    console.log('src/local/toolbar.ts - buildAligns')
     const titleIcon = buildIcon(`align-${this.defaultCell.align}`)
     const clickHandler = (it: string) => {
+      console.log('src/local/toolbar.ts - clickHandler')
       titleIcon.replace(`align-${it}`)
       this.change('align', it)
     }
@@ -131,8 +139,10 @@ export class Toolbar {
     )])
   }
   private buildValigns (): Dropdown {
+    console.log('src/local/toolbar.ts - buildValigns')
     const titleIcon = buildIcon(`valign-${this.defaultCell.valign}`)
     const clickHandler = (it: string) => {
+      console.log('src/local/toolbar.ts - clickHandler')
       titleIcon.replace(`valign-${it}`)
       this.change('valign', it)
     }
@@ -145,22 +155,29 @@ export class Toolbar {
     )])
   }
   private buildWordWrap (): Element {
+    console.log('src/local/toolbar.ts - buildWordWrap')
     return buildIconItem('textwrap', (is) => this.change('wordWrap', is))
   }
   private buildFontWeight (): Element {
+    console.log('src/local/toolbar.ts - buildFontWeight')
     return buildIconItem('bold', (is) => this.change('bold', is))
   }
   private buildFontStyle (): Element {
+    console.log('src/local/toolbar.ts - buildFontStyle')
     return buildIconItem('italic', (is) => this.change('italic', is))
   }
   private buildTextDecoration (): Element {
+    console.log('src/local/toolbar.ts - buildTextDecoration')
     return buildIconItem('underline', (is) => this.change('underline', is))
   }
   private buildMerge (): Element {
+    console.log('src/local/toolbar.ts - buildMerge')
     return buildIconItem('merge', (is) => this.change('merge', is))
   }
   private buildColor (): Dropdown {
+    console.log('src/local/toolbar.ts - buildColor')
     const clickHandler = (color: string) => {
+      console.log('src/local/toolbar.ts - clickHandler')
       this.elColor.title.style('border-bottom-color', color)
       this.change('color', color)
     }
@@ -170,7 +187,9 @@ export class Toolbar {
       [buildColorPanel(clickHandler)])
   }
   private buildBackgroundColor (): Dropdown {
+    console.log('src/local/toolbar.ts - buildBackgroundColor')
     const clickHandler = (color: string) => {
+      console.log('src/local/toolbar.ts - clickHandler')
       this.elBackgroundColor.title.style('border-bottom-color', color)
       this.change('backgroundColor', color)
     }
@@ -180,33 +199,47 @@ export class Toolbar {
       [buildColorPanel(clickHandler)])
   }
   private buildUndo (): Element {
+    console.log('src/local/toolbar.ts - buildUndo')
     return buildItem().child(buildIcon('undo'))
       .on('click', (evt) => {
+        console.log('src/local/toolbar.ts - on')
+        // console.log('toolbar.ts - buildUndo()')
+        // console.log('evt: ', evt)
         this.undo() ? this.elUndo.able() : this.elUndo.disabled()
       })
       .disabled()
   }
   private buildRedo (): Element {
+    console.log('src/local/toolbar.ts - buildRedo')
     return buildItem().child(buildIcon('redo'))
       .on('click', (evt) => {
+        console.log('src/local/toolbar.ts - on')
+        // console.log('toolbar.ts - buildRedo()')
+        // console.log('evt: ', evt)
         this.redo() ? this.elRedo.able() : this.elRedo.disabled()
       })
       .disabled()
   }
   private buildPaintformat (): Element {
+    console.log('src/local/toolbar.ts - buildPaintformat')
     return buildIconItem('paintformat', (is) => { 
+      console.log('src/local/toolbar.ts - buildIconItem')
       this.change('paintformat', true);
       this.elPaintformat.deactive();
     })
   }
   private buildClearformat (): Element {
+    console.log('src/local/toolbar.ts - buildClearformat')
     return buildIconItem('clearformat', (is) => { 
+      console.log('src/local/toolbar.ts - buildIconItem')
       this.change('clearformat', true);
       this.elClearformat.deactive();
     });
   }
   private buildFormats (): Dropdown {
+    console.log('src/local/toolbar.ts - buildFormats')
     const clickHandler = (it: Format) => {
+      console.log('src/local/toolbar.ts - clickHandler')
       this.elFormat.title.html(this.ss.getFormat(it.key).title);
       this.change('format', it.key)
     }
@@ -219,7 +252,9 @@ export class Toolbar {
     )])
   }
   private buildFonts (): Dropdown {
+    console.log('src/local/toolbar.ts - buildFonts')
     const clickHandler = (it: Font) => {
+      console.log('src/local/toolbar.ts - clickHandler')
       this.elFont.title.html(it.title)
       this.change('font', it.key)
     }
@@ -232,7 +267,9 @@ export class Toolbar {
     )])
   }
   private buildFontSizes (): Dropdown {
+    console.log('src/local/toolbar.ts - buildFontSizes')
     const clickHandler = (it: number) => {
+      console.log('src/local/toolbar.ts - clickHandler')
       this.elFontSize.title.html(`${it}`)
       this.change('fontSize', it)
     }
@@ -247,8 +284,10 @@ export class Toolbar {
 }
 
 const buildIconItem = (iconName: string, change: (flag: boolean) => void) => {
+  console.log('src/local/toolbar.ts - buildIconItem')
   const el = buildItem().child(buildIcon(iconName))
   el.on('click', (evt) => {
+    console.log('src/local/toolbar.ts - on')
     let is = el.isActive()
     is ? el.deactive() : el.active()
     change(!is)

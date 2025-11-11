@@ -45,24 +45,29 @@ export class LocalSpreadsheet {
       // console.log("Toolbar: ", this.toolbar)
       this.toolbar.undo = () => {
         // console.log('undo::')
+        console.log('src/local/index.ts - this.toolbar.undo')
         return this.table.undo()
       }
       this.toolbar.redo = () => {
         // console.log('redo::')
+        console.log('src/local/index.ts - this.toolbar.redo')
         return this.table.redo()
       }
     }
 
     let bodyHeightFn = (): number => {
+      console.log('src/local/index.ts - bodyHeightFn')
       return 600
     }
     let bodyWidthFn = (): number => {
+      console.log('src/local/index.ts - bodyWidthFn')
       return 800
     }
     this.table = new Table(this.ss, Object.assign({height: bodyHeightFn, width: bodyWidthFn, mode: this.options.mode}));
     this.table.change = (data) => {
-      this.toolbar && this.toolbar.setRedoAble(this.ss.isRedo())
-      this.toolbar && this.toolbar.setUndoAble(this.ss.isUndo())
+      console.log('src/local/index.ts - this.table.change')
+      this.toolbar && this.toolbar.setRedoAble(this.ss.isRedo()) // 여기다 모듈 Redo/Undo 확인 API 제공
+      this.toolbar && this.toolbar.setUndoAble(this.ss.isUndo()) // 여기다 모듈 Redo/Undo 확인 API 제공
       this._change(data)
     }
     this.table.editorChange = (v) => this.editorChange(v)
@@ -72,6 +77,7 @@ export class LocalSpreadsheet {
 
   loadData (data: SpreadsheetData): LocalSpreadsheet { // 파일 읽어오고 나서 여기로 전달하면 데이터 저장 가능
     // reload until waiting main thread
+    console.log('src/local/index.ts - loadData')
     setTimeout(() => {
       this.ss.data = data
       this.table.reload()
@@ -80,11 +86,13 @@ export class LocalSpreadsheet {
   }
 
   change (cb: (data: SpreadsheetData) => void): LocalSpreadsheet { // 얘는 콜백 지정일 뿐, 아래쪽 4개의 change에서 c++과 셀 데이터 동기화 필요
+    console.log('src/local/index.ts - change')
     this._change = cb
     return this;
   }
 
   private render (): void {
+    console.log('src/local/index.ts - render')
     this.bindEl.appendChild(h().class('spreadsheet').children([
       h().class('spreadsheet-bars').children([
         this.toolbar && this.toolbar.el || '',
@@ -95,41 +103,45 @@ export class LocalSpreadsheet {
   }
 
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
-    console.log('Cell: ', k)
-    console.log('any: ', v)
+    console.log('src/local/index.ts - toolbarChange')
+    // console.log('Cell: ', k)
+    // console.log('any: ', v)
     if (k === 'merge') {
       this.table.merge();
-      console.log('merge')
+      // console.log('merge')
       return;
     } else if (k === 'clearformat') {
       this.table.clearformat();
-      console.log('clearformat')
+      // console.log('clearformat')
       return ;
     } else if (k === 'paintformat') {
       this.table.copyformat();
-      console.log('paintformat')
+      // console.log('paintformat')
       return ;
     }
-    console.log('setCellAttr')
+    // console.log('setCellAttr')
     this.table.setCellAttr(k, v);
   }
 
   private editorbarChange (v: Cell) { // 위쪽의 입력바를 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
-    console.log('Cell: ', v)
-    console.log('editorbarChange')
+    // console.log('Cell: ', v)
+    // console.log('editorbarChange')
+    console.log('src/local/index.ts - editorbarChange')
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
 
   private editorChange (v: Cell) { // 셀을 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
-    console.log('Cell: ', v)
-    console.log('editorChange')
+    // console.log('Cell: ', v)
+    // console.log('editorChange')
+    console.log('src/local/index.ts - editorChange')
     this.editorbar && this.editorbar.setValue(v)
   }
 
   private clickCell (rindex: number, cindex: number, v: Cell | null) { // 셀 편집 관련 다 여기 거쳐서 감
-    console.log('rindex: ', rindex, ', cindex: ', cindex)
-    console.log('Cell: ', v)
-    console.log('clickCell')
+    // console.log('rindex: ', rindex, ', cindex: ', cindex)
+    // console.log('Cell: ', v)
+    // console.log('clickCell')
+    console.log('src/local/index.ts - clickCell')
     const cols = this.ss.cols()
     this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
     this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)

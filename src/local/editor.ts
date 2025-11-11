@@ -95,6 +95,8 @@ export class Editor {
     if (evt.keyCode === 13) {
       evt.preventDefault()
     }
+    console.log('editor - inputKeydown()')
+    console.log('event: ', evt)
   }
 
   private inputChange (evt: any) {
@@ -104,7 +106,7 @@ export class Editor {
     } else {
       this.value = {text: v}
     }
-
+    console.log('editor - inputChange()')
     console.log('event: ', evt)
     this.change(this.value)
     this.autocomplete(v);
