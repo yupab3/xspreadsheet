@@ -1,6 +1,7 @@
 import { Element, h } from "./base/element";
 import { Cell } from "../core/cell";
 import { mouseMoveUp } from "./event"
+import stringify from 'fast-safe-stringify'
 
 export class Editorbar {
   el: Element;
@@ -26,8 +27,8 @@ export class Editorbar {
 
   setValue (value: Cell | null) {
     console.log('src/local/editorbar.ts - setValue')
-    console.log('bf: ', this.value)
-    console.log('af: ', value)
+    console.log('bf: ', stringify(this.value))
+    console.log('af: ', stringify(value))
     this.value = value
     this.textarea.val(value && value.text || '')
   }

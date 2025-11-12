@@ -5,6 +5,7 @@ import { Cell, defaultCell } from './cell'
 import { alphabet } from './alphabet'
 import { Select } from './select'
 import { unbind } from '../local/event';
+import stringify from 'fast-safe-stringify';
 
 export interface Row {
   height: number
@@ -82,8 +83,8 @@ export class Spreadsheet {
   // build select
   buildSelect (startTarget: any, endTarget: any) {
     console.log('src/core/index.ts - buildSelect')
-    console.log('startTarget: ', startTarget)
-    console.log('endTarget: ', endTarget)
+    console.log('startTarget: ', stringify(startTarget))
+    console.log('endTarget: ', stringify(endTarget))
     const startAttrs = getElementAttrs(startTarget)
     const endAttrs = getElementAttrs(endTarget)
     // console.log(':::::::>>>', startAttrs, endAttrs)

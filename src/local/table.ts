@@ -10,6 +10,7 @@ import { Cell, getStyleFromCell } from "../core/cell";
 import { formatRenderHtml } from "../core/format";
 import { formulaRender } from "../core/formula";
 import { bind } from "./event";
+import stringify from 'fast-safe-stringify';
 
 interface Map<T> {
   [key: string]: T
@@ -258,7 +259,7 @@ export class Table {
 
   setValueWithText (v: Cell) {
     console.log('src/local/table.ts - setValueWithText')
-    console.log('Cell = ', v)
+    console.log('Cell = ', stringify(v))
     if (this.currentIndexs) { // 이 안에서 싹 날리고 currentIndexs랑 Cell 데이터로 요청 쏴주기 히스토리도 필요없음
       this.ss.cellText(v.text, (rindex, cindex, cell) => {
         this.td(rindex, cindex).html(this.renderCell(rindex, cindex, cell))

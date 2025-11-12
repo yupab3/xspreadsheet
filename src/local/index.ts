@@ -9,6 +9,7 @@ import { Table } from './table';
 import { Toolbar } from './toolbar';
 import { Editorbar } from './editorbar';
 import { h, Element } from './base/element'
+import stringify from 'fast-safe-stringify';
 
 export interface Options extends SpreadsheetOptions {
   height?: () => number;
@@ -104,8 +105,8 @@ export class LocalSpreadsheet {
 
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     console.log('src/local/index.ts - toolbarChange')
-    console.log('Cell: ', k)
-    console.log('any: ', v)
+    console.log('keyof Cell: ', stringify(k))
+    console.log('any: ', stringify(v))
     if (k === 'merge') {
       this.table.merge();
       // console.log('merge')
@@ -125,13 +126,13 @@ export class LocalSpreadsheet {
 
   private editorbarChange (v: Cell) { // 위쪽의 입력바를 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     console.log('src/local/index.ts - editorbarChange')
-    // console.log('Cell: ', v)
+    console.log('Cell: ', stringify(v))
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
 
   private editorChange (v: Cell) { // 셀을 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     console.log('src/local/index.ts - editorChange')
-    // console.log('Cell: ', v)
+    console.log('Cell: ', stringify(v))
     this.editorbar && this.editorbar.setValue(v)
   }
 
@@ -140,6 +141,7 @@ export class LocalSpreadsheet {
     // console.log('Cell: ', v)
     // console.log('clickCell')
     console.log('src/local/index.ts - clickCell')
+    console.log('Cell: ', stringify(v))
     const cols = this.ss.cols()
     this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
     this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
