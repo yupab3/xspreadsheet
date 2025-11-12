@@ -24,7 +24,7 @@ export class Suggest extends Element {
     this.hideAndRemoveEvents()
   }
   private documentKeydownHandler (e: any) {
-    console.log('keyCode: ', e)
+    // console.log('keyCode: ', e)
     if (this.filterList.length <= 0 && e.target.type !== 'textarea') return ;
 
     switch (e.keyCode) {
