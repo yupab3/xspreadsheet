@@ -21,6 +21,9 @@
     "ui",
     "spreadsheet"
   ],
+  "dependencies": {
+    "fast-safe-stringify": "^2.1.1"
+  },
   "license": "MIT",
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.0",

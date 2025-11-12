@@ -5,6 +5,7 @@ import { Cell, defaultCell } from './cell'
 import { alphabet } from './alphabet'
 import { Select } from './select'
 import { unbind } from '../local/event';
+import stringify from 'fast-safe-stringify';
 
 export interface Row {
   height: number
@@ -56,6 +57,7 @@ export class Spreadsheet {
   private cutSelect: Select | null = null;
 
   change: (data: SpreadsheetData) => void = () => {}
+  sendRange: (data: string) => void = () => {}
 
   constructor (options: SpreadsheetOptions = {}) {
     this.formats = options.formats || formats
@@ -119,7 +121,7 @@ export class Spreadsheet {
     // console.log('row: ', minRow, maxRow, ', col:', minCol, maxCol, canotMerge)
     // 计算是否可以merge
     this.select = new Select([minRow, minCol], [maxRow, maxCol], !canotMerge)
-    return this.select
+    this.sendRange(stringify(this.select));
   }
 
   defaultRowHeight (): number {
