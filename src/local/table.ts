@@ -258,7 +258,7 @@ export class Table {
 
   setValueWithText (v: Cell) {
     console.log('src/local/table.ts - setValueWithText')
-    // console.log('v = ', v)
+    console.log('Cell = ', v)
     if (this.currentIndexs) { // 이 안에서 싹 날리고 currentIndexs랑 Cell 데이터로 요청 쏴주기 히스토리도 필요없음
       this.ss.cellText(v.text, (rindex, cindex, cell) => {
         this.td(rindex, cindex).html(this.renderCell(rindex, cindex, cell))
@@ -513,11 +513,15 @@ export class Table {
   }
   private changeRowResizer (index: number, distance: number) {
     console.log('src/local/table.ts - changeRowResizer')
+    console.log('index: ', index)
+    console.log('distance: ', distance)
     const h = this.ss.row(index).height + distance
     this.changeRowHeight(index, h);
   }
   private changeColResizer (index: number, distance: number) {
     console.log('src/local/table.ts - changeColResizer')
+    console.log('index: ', index)
+    console.log('distance: ', distance)
     const w = this.ss.col(index).width + distance
     if (w <= 50) return
     this.ss.col(index, w)

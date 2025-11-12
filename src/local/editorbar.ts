@@ -26,6 +26,8 @@ export class Editorbar {
 
   setValue (value: Cell | null) {
     console.log('src/local/editorbar.ts - setValue')
+    console.log('bf: ', this.value)
+    console.log('af: ', value)
     this.value = value
     this.textarea.val(value && value.text || '')
   }

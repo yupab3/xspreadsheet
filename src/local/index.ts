@@ -104,8 +104,8 @@ export class LocalSpreadsheet {
 
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     console.log('src/local/index.ts - toolbarChange')
-    // console.log('Cell: ', k)
-    // console.log('any: ', v)
+    console.log('Cell: ', k)
+    console.log('any: ', v)
     if (k === 'merge') {
       this.table.merge();
       // console.log('merge')
@@ -124,16 +124,14 @@ export class LocalSpreadsheet {
   }
 
   private editorbarChange (v: Cell) { // 위쪽의 입력바를 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
-    // console.log('Cell: ', v)
-    // console.log('editorbarChange')
     console.log('src/local/index.ts - editorbarChange')
+    // console.log('Cell: ', v)
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
 
   private editorChange (v: Cell) { // 셀을 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
-    // console.log('Cell: ', v)
-    // console.log('editorChange')
     console.log('src/local/index.ts - editorChange')
+    // console.log('Cell: ', v)
     this.editorbar && this.editorbar.setValue(v)
   }
 
