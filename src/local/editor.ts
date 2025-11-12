@@ -105,7 +105,7 @@ export class Editor {
       this.value = {text: v}
     }
 
-    console.log('event: ', evt)
+    // console.log('event: ', evt)
     this.change(this.value)
     this.autocomplete(v);
 
@@ -118,7 +118,7 @@ export class Editor {
     if (v[0] === '=') {
       if (!v.includes('(')) {
         const search = v.substring(1)
-        console.log(':::;search word:', search)
+        // console.log(':::;search word:', search)
         this.suggest.search(this.editor, this.textarea, search);
       } else {
         this.suggest.hide()
