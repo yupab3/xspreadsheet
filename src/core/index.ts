@@ -122,6 +122,7 @@ export class Spreadsheet {
     // 计算是否可以merge
     this.select = new Select([minRow, minCol], [maxRow, maxCol], !canotMerge)
     this.sendRange(stringify(this.select));
+    return this.select;
   }
 
   defaultRowHeight (): number {
