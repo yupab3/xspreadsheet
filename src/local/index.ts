@@ -17,7 +17,7 @@ export interface Options extends SpreadsheetOptions {
   mode?: 'design' | 'write' | 'read';
 }
 
-export class ControlData {
+class ControlData {
   key: keyof Cell = '';
   value: any;
 
@@ -35,7 +35,7 @@ export class LocalSpreadsheet {
   options: Options;
 
   _change: (data: SpreadsheetData) => void = () => {}
-  sendControl: (data: string) => void = () => {}
+  sendCellControl: (data: string) => void = () => {}
 
   constructor (el: HTMLElement, options: Options = {}) {
     this.bindEl = el
@@ -106,7 +106,7 @@ export class LocalSpreadsheet {
 
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     let JSControlData = new ControlData(k, v)
-    this.sendControl(stringify(JSControlData))
+    this.sendCellControl(stringify(JSControlData))
     // console.log('Cell: ', k)
     // console.log('any: ', v)
     if (k === 'merge') {
@@ -130,7 +130,7 @@ export class LocalSpreadsheet {
     // console.log('Cell: ', v)
     // console.log('editorbarChange')
     let JSControlData = new ControlData('text', v["text"])
-    this.sendControl(stringify(JSControlData))
+    this.sendCellControl(stringify(JSControlData))
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
 
@@ -138,7 +138,7 @@ export class LocalSpreadsheet {
     // console.log('Cell: ', v)
     // console.log('editorChange')
     let JSControlData = new ControlData('text', v["text"]);
-    this.sendControl(stringify(JSControlData));
+    this.sendCellControl(stringify(JSControlData));
     this.editorbar && this.editorbar.setValue(v)
   }
 

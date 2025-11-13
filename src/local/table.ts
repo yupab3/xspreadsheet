@@ -11,8 +11,17 @@ import { formatRenderHtml } from "../core/format";
 import { formulaRender } from "../core/formula";
 import { bind } from "./event";
 
+import stringify from 'fast-safe-stringify';
+
 interface Map<T> {
   [key: string]: T
+}
+
+class ControlData {
+  index: number;
+  distance: number;
+
+  constructor (i: number, d: number) { this.index = i; this.distance = d; }
 }
 
 export interface TableOption {
@@ -53,6 +62,8 @@ export class Table {
   change: (data: SpreadsheetData) => void = () => {}
   editorChange: (v: Cell) => void = (v) => {}
   clickCell: (rindex: number, cindex: number, v: Cell | null) => void = (rindex, cindex, v) => {}
+  sendColControl: (data: string) => void = () => {}
+  sendRowControl: (data: string) => void = () => {}
 
   constructor (ss: Spreadsheet, public options: TableOption) {
     this.ss = ss;
@@ -478,11 +489,15 @@ export class Table {
   }
   private changeRowResizer (index: number, distance: number) {
     const h = this.ss.row(index).height + distance
+    let sendData = new ControlData(index, h);
+    this.sendColControl(stringify(sendData))
     this.changeRowHeight(index, h);
   }
   private changeColResizer (index: number, distance: number) {
     const w = this.ss.col(index).width + distance
     if (w <= 50) return
+    let sendData = new ControlData(index, w);
+    this.sendColControl(stringify(sendData))
     this.ss.col(index, w)
     const cols = this.cols[index+'']
     if (cols) {
