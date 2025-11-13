@@ -490,7 +490,7 @@ export class Table {
   private changeRowResizer (index: number, distance: number) {
     const h = this.ss.row(index).height + distance
     let sendData = new ControlData(index, h);
-    this.sendColControl(stringify(sendData))
+    this.sendRowControl(stringify(sendData))
     this.changeRowHeight(index, h);
   }
   private changeColResizer (index: number, distance: number) {
