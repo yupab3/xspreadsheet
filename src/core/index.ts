@@ -136,7 +136,7 @@ export class Spreadsheet {
     return this.data.colWidth || 100
   }
 
-  copy (): void {
+  copy (): void { // copyformat 눌렀을 때 이거 호출하고, 처리만 C++에서 해주면 됨.
     console.log('src/core/index.ts - copy')
     this.copySelect = this.select
   }

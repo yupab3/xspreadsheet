@@ -338,7 +338,7 @@ export class Table {
     this.state = 'copyformat';
   }
 
-  paste () {
+  paste () { // 여기서 아래쪽에 후처리 하는 부분을 호출하는 쪽에 붙여주고
     console.log('src/local/table.ts - paste')
     // console.log('state: ', this.state, this.ss.select)
     if (this.state !== null && this.ss.select) {
@@ -413,7 +413,7 @@ export class Table {
     return td
   }
 
-  private selectorChange () {
+  private selectorChange () { // 여기서 호출하고, paste 대신 후처리만 해주면 된다. -> 실제 작업은 전부 C++
     console.log('src/local/table.ts - selectorChange')
     if (this.state === 'copyformat') {
       this.paste();
