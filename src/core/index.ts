@@ -410,7 +410,7 @@ export class Spreadsheet {
             }
           }
         } else {
-          let v: Cell = {invisible: select.canMerge}
+          let v: Cell = {invisible: select.canMerge} // canmerge 보내서 history 관리에 적용해야함
           if (select.canMerge) {
             history.add([rindex, cindex, 'invisible'], undefined, select.canMerge)
 
