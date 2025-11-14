@@ -107,7 +107,7 @@ export class LocalSpreadsheet {
     console.log('src/local/index.ts - toolbarChange')
     console.log('keyof Cell: ', stringify(k))
     console.log('any: ', stringify(v))
-    return
+
     if (k === 'merge') {
       this.table.merge();
       // console.log('merge')
@@ -128,14 +128,14 @@ export class LocalSpreadsheet {
   private editorbarChange (v: Cell) { // 위쪽의 입력바를 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     console.log('src/local/index.ts - editorbarChange')
     console.log('Cell: ', stringify(v))
-    return
+    
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
 
   private editorChange (v: Cell) { // 셀을 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     console.log('src/local/index.ts - editorChange')
     console.log('Cell: ', stringify(v))
-    return
+    
     this.editorbar && this.editorbar.setValue(v)
   }
 
@@ -145,7 +145,7 @@ export class LocalSpreadsheet {
     // console.log('clickCell')
     console.log('src/local/index.ts - clickCell')
     console.log('Cell: ', stringify(v))
-    return
+    
     const cols = this.ss.cols()
     this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
     this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
