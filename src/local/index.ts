@@ -36,6 +36,7 @@ export class LocalSpreadsheet {
 
   _change: (data: SpreadsheetData) => void = () => {}
   sendCellControl: (data: string) => void = () => {}
+  getDataFromCpp: () => SpreadsheetData = () => this.ss.data
 
   constructor (el: HTMLElement, options: Options = {}) {
     this.bindEl = el
@@ -61,6 +62,7 @@ export class LocalSpreadsheet {
         // console.log('redo::')
         return this.table.redo()
       }
+      this.ss.getDataFromCpp = () => this.getDataFromCpp()
     }
 
     let bodyHeightFn = (): number => {
@@ -107,6 +109,8 @@ export class LocalSpreadsheet {
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     let JSControlData = new ControlData(k, v)
     this.sendCellControl(stringify(JSControlData))
+    this.loadData(this.getDataFromCpp())
+    return
     // console.log('Cell: ', k)
     // console.log('any: ', v)
     if (k === 'merge') {
@@ -131,6 +135,8 @@ export class LocalSpreadsheet {
     // console.log('editorbarChange')
     let JSControlData = new ControlData('text', v["text"])
     this.sendCellControl(stringify(JSControlData))
+    this.loadData(this.getDataFromCpp())
+    return
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
 
@@ -139,6 +145,8 @@ export class LocalSpreadsheet {
     // console.log('editorChange')
     let JSControlData = new ControlData('text', v["text"]);
     this.sendCellControl(stringify(JSControlData));
+    this.loadData(this.getDataFromCpp())
+    return
     this.editorbar && this.editorbar.setValue(v)
   }
 
