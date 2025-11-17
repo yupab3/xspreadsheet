@@ -58,6 +58,11 @@ export class Spreadsheet {
 
   change: (data: SpreadsheetData) => void = () => {}
   sendRange: (data: string) => void = () => {}
+  undoChecker: () => boolean = () => false;
+  redoChecker: () => boolean = () => false;
+  undoHandler: () => void = () => {};
+  redoHandler: () => void = () => {};
+  getDataFromCpp: () => SpreadsheetData = () => this.data
 
   constructor (options: SpreadsheetOptions = {}) {
     this.formats = options.formats || formats
@@ -283,40 +288,32 @@ export class Spreadsheet {
   }
 
   isRedo (): boolean {
-    return this.histories2.length > 0
+    return this.redoChecker()
   }
-  redo (cb: StandardCallback): boolean { // Redo 로직 부분 여기서 c++과 동기 필요
-    const { histories, histories2 } = this
-    if (histories2.length > 0) {
-      const history = histories2.pop()
-      if (history) {
-        this.resetByHistory(history, cb, 'redo')
-        histories.push(history)
-        this.change(this.data)
-      }
+  redo (): boolean { // Redo 로직 부분 여기서 c++과 동기 필요
+    if (this.isRedo()) {
+      this.redoHandler()
+      this.data = this.getDataFromCpp()
+      this.change(this.data)
     }
     return this.isRedo()
   }
 
   isUndo (): boolean {
-    return this.histories.length > 0
+    return this.undoChecker()
   }
-  undo (cb: StandardCallback): boolean { // Undo 로직 부분 여기서 c++과 동기 필요
-    const { histories, histories2 } = this
-    // console.log('histories:', histories, histories2)
-    if (histories.length > 0) {
-      const history = histories.pop()
-      if (history) {
-        this.resetByHistory(history, cb, 'undo')
-        histories2.push(history)
-        this.change(this.data)
-      }
+  undo (): boolean { // Undo 로직 부분 여기서 c++과 동기 필요
+    if (this.isUndo()) {
+      this.undoHandler()
+      this.data = this.getDataFromCpp()
+      this.change(this.data)
     }
     return this.isUndo()
   }
   // 얘 로직 신경쓸 필요 없이 redo/undo c++측과 동기화 가능
   resetByHistory (v: History, cb: StandardCallback, state: 'undo' | 'redo') { // 실제로 동작하는 곳 History만 C++에서 받은 데이터로 만들고 나머지는 그대로 사용해도 괜찮을듯.
     // console.log('history: ', history)
+    console.log("@!#$!@$%@#%#!Undo Redo 눌렀는데 나오면 안된다~~~~~~~~~~~~~~!@#%!@$@#!%")
     v.values.forEach(([keys, oldValue, value]) => {
       if (v.type === 'cells') {
         const v = state === 'undo' ? oldValue : value // undo일 땐 이전 값으로, redo일 땐 다음 값으로

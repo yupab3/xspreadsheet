@@ -289,16 +289,11 @@ export class Table {
     this.editor && this.editor.setStyle(this.ss.currentCell())
   }
 
-  undo (): boolean {
-    return this.ss.undo((rindex, cindex, cell) => {
-      // console.log('>', rindex, ',', cindex, '::', cell)
-      this.setTdStylesAndAttrsAndText(rindex, cindex, cell)
-    })
+  undo (): boolean { // 콜백 부분만 지워버리기
+    return this.ss.undo()
   }
-  redo (): boolean {
-    return this.ss.redo((rindex, cindex, cell) => {
-      this.setTdStylesAndAttrsAndText(rindex, cindex, cell)
-    })
+  redo (): boolean { // 콜백 부분만 지워버리기
+    return this.ss.redo()
   }
   private setTdStylesAndAttrsAndText (rindex: number, cindex: number, cell: Cell) {
     // console.log('여기냐? 4')
