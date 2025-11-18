@@ -408,6 +408,7 @@ export class Table {
     //   // console.log("3333333")
     //   this.paste();
     // }
+    if (this.state === 'copyformat') this.state = null;
     this.sendRange(stringify(this.ss.select));
   }
 

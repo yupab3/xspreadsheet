@@ -126,7 +126,7 @@ export class Spreadsheet {
     // console.log('row: ', minRow, maxRow, ', col:', minCol, maxCol, canotMerge)
     // 计算是否可以merge
     this.select = new Select([minRow, minCol], [maxRow, maxCol], !canotMerge)
-    this.sendRange(stringify(this.select));
+    // this.sendRange(stringify(this.select));
     return this.select;
   }
 
@@ -161,7 +161,7 @@ export class Spreadsheet {
         //     history.add([rindex, cindex], oldCell, newCell)
         //   }
         // })
-        console.log("11111111")
+        console.log("****************************WTF***********************")
       } else {
         cselect.forEach((rindex, cindex, i, j, rowspan, colspan) => {
           if (this.select) {
