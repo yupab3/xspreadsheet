@@ -36,6 +36,7 @@ export class Table {
   tds: Map<Element> = {};
   ths: Map<Element> = {};
   ss: Spreadsheet;
+  editorbar: Editorbar | null = null;
   formulaCellIndexs: Set<string> = new Set(); // 表达式单元格set
 
   el: Element;
@@ -64,9 +65,11 @@ export class Table {
   clickCell: (rindex: number, cindex: number, v: Cell | null) => void = (rindex, cindex, v) => {}
   sendColControl: (data: string) => void = () => {}
   sendRowControl: (data: string) => void = () => {}
+  getDataFromCpp: () => SpreadsheetData = () => this.ss.data
 
-  constructor (ss: Spreadsheet, public options: TableOption) {
+  constructor (ss: Spreadsheet, editorbar: Editorbar, public options: TableOption) {
     this.ss = ss;
+    this.editorbar = editorbar;
     this.ss.change = (data) => {
       this.change(data)
     }
@@ -290,10 +293,14 @@ export class Table {
   }
 
   undo (): boolean { // 콜백 부분만 지워버리기
-    return this.ss.undo()
+    this.ss.undo()
+    this.reload()
+    return this.ss.isUndo()
   }
   redo (): boolean { // 콜백 부분만 지워버리기
-    return this.ss.redo()
+    this.ss.redo()
+    this.reload()
+    return this.ss.isRedo()
   }
   private setTdStylesAndAttrsAndText (rindex: number, cindex: number, cell: Cell) {
     // console.log('여기냐? 4')
@@ -323,6 +330,7 @@ export class Table {
   }
 
   paste () {
+    // console.log("2222222")
     // console.log('state: ', this.state, this.ss.select)
     if (this.state !== null && this.ss.select) {
       this.ss.paste((rindex, cindex, cell) => {
@@ -339,6 +347,8 @@ export class Table {
         this.setTdAttrs(rindex, cindex, cell);
         td.html('');
       });
+      this.ss.data = this.getDataFromCpp()
+      this.reload()
       this.selector.reload();
     }
 
@@ -394,6 +404,7 @@ export class Table {
 
   private selectorChange () {
     if (this.state === 'copyformat') {
+      // console.log("3333333")
       this.paste();
     }
   }
@@ -474,7 +485,9 @@ export class Table {
 
   private changeRowHeight (index: number, h: number) {
     if (h <= this.ss.defaultRowHeight()) return
-    this.ss.row(index, h)
+    let sendData = new ControlData(index, h);
+    this.sendRowControl(stringify(sendData))
+    this.ss.data = this.getDataFromCpp()
     const firstTds = this.firsttds[index+'']
     if (firstTds) {
       firstTds.forEach(td => td.attr('height', h))
@@ -484,16 +497,23 @@ export class Table {
   }
   private changeRowResizer (index: number, distance: number) {
     const h = this.ss.row(index).height + distance
+    if (h <= this.ss.defaultRowHeight()) return
     let sendData = new ControlData(index, h);
     this.sendRowControl(stringify(sendData))
-    this.changeRowHeight(index, h);
+    this.ss.data = this.getDataFromCpp()
+    const firstTds = this.firsttds[index+'']
+    if (firstTds) {
+      firstTds.forEach(td => td.attr('height', h))
+    }
+    this.selector.reload()
+    this.editor && this.editor.reload()
   }
   private changeColResizer (index: number, distance: number) {
     const w = this.ss.col(index).width + distance
     if (w <= 50) return
     let sendData = new ControlData(index, w);
     this.sendColControl(stringify(sendData))
-    this.ss.col(index, w)
+    this.ss.data = this.getDataFromCpp()
     const cols = this.cols[index+'']
     if (cols) {
       cols.forEach(col => col.attr('width', w))

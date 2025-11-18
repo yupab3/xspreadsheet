@@ -51,7 +51,7 @@ export class Spreadsheet {
   data: SpreadsheetData;
   private histories: Array<History> = [];
   private histories2: Array<History> = [];
-  private currentCellIndexes: [number, number] = [0, 0];
+  currentCellIndexes: [number, number] = [0, 0];
   select: Select | null = null;
   private copySelect: Select | null = null;
   private cutSelect: Select | null = null;
@@ -151,27 +151,28 @@ export class Spreadsheet {
       this.cutSelect = null
     }
     if (cselect && this.select) {
-      const history = new History('cells')
+      // const history = new History('cells')
       if (state === 'copyformat') {
-        this.select.forEach((rindex, cindex, i, j, rowspan, colspan) => {
-          if (cselect) {
-            const srcRowIndex = cselect.rowIndex(i)
-            const srcColIndex = cselect.colIndex(j)
-            const [oldCell, newCell] = this.copyCell(srcRowIndex, srcColIndex, rindex, cindex, state, cb, clear)
-            history.add([rindex, cindex], oldCell, newCell)
-          }
-        })
+        // this.select.forEach((rindex, cindex, i, j, rowspan, colspan) => {
+        //   if (cselect) {
+        //     const srcRowIndex = cselect.rowIndex(i)
+        //     const srcColIndex = cselect.colIndex(j)
+        //     const [oldCell, newCell] = this.copyCell(srcRowIndex, srcColIndex, rindex, cindex, state, cb, clear)
+        //     history.add([rindex, cindex], oldCell, newCell)
+        //   }
+        // })
+        console.log("11111111")
       } else {
         cselect.forEach((rindex, cindex, i, j, rowspan, colspan) => {
           if (this.select) {
             const destRowIndex = this.select.start[0] + i
             const destColIndex = this.select.start[1] + j
             const [oldCell, newCell] = this.copyCell(rindex, cindex, destRowIndex, destColIndex, state, cb, clear)
-            history.add([destRowIndex, destColIndex], oldCell, newCell)
+            // history.add([destRowIndex, destColIndex], oldCell, newCell)
           }
         })
       }
-      this.histories.push(history)
+      // this.histories.push(history)
       this.change(this.data)
     }
   }

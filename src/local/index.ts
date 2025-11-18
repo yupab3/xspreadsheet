@@ -47,23 +47,21 @@ export class LocalSpreadsheet {
 
     this.ss = new Spreadsheet(options);
     // console.log('::::>>>select:', this.ss.select)
-    if (this.options.mode === 'design') {
-      this.editorbar = new Editorbar()
-      this.editorbar.change = (v) => this.editorbarChange(v)
+    this.editorbar = new Editorbar()
+    this.editorbar.change = (v) => this.editorbarChange(v)
 
-      this.toolbar = new Toolbar(this.ss);
-      this.toolbar.change = (key, v) => this.toolbarChange(key, v)
-      // console.log("Toolbar: ", this.toolbar)
-      this.toolbar.undo = () => {
-        // console.log('undo::')
-        return this.table.undo()
-      }
-      this.toolbar.redo = () => {
-        // console.log('redo::')
-        return this.table.redo()
-      }
-      this.ss.getDataFromCpp = () => this.getDataFromCpp()
+    this.toolbar = new Toolbar(this.ss);
+    this.toolbar.change = (key, v) => this.toolbarChange(key, v)
+    // console.log("Toolbar: ", this.toolbar)
+    this.toolbar.undo = () => {
+      // console.log('undo::')
+      return this.table.undo()
     }
+    this.toolbar.redo = () => {
+      // console.log('redo::')
+      return this.table.redo()
+    }
+    this.ss.getDataFromCpp = () => this.getDataFromCpp()
 
     let bodyHeightFn = (): number => {
       return 600
@@ -71,7 +69,7 @@ export class LocalSpreadsheet {
     let bodyWidthFn = (): number => {
       return 800
     }
-    this.table = new Table(this.ss, Object.assign({height: bodyHeightFn, width: bodyWidthFn, mode: this.options.mode}));
+    this.table = new Table(this.ss, this.editorbar, Object.assign({height: bodyHeightFn, width: bodyWidthFn, mode: this.options.mode}));
     this.table.change = (data) => {
       this.toolbar && this.toolbar.setRedoAble(this.ss.isRedo())
       this.toolbar && this.toolbar.setUndoAble(this.ss.isUndo())
@@ -79,6 +77,7 @@ export class LocalSpreadsheet {
     }
     this.table.editorChange = (v) => this.editorChange(v)
     this.table.clickCell = (rindex, cindex, cell) => this.clickCell(rindex, cindex, cell)
+    this.table.getDataFromCpp = () => this.getDataFromCpp()
     this.render();
   }
 
@@ -96,6 +95,11 @@ export class LocalSpreadsheet {
     return this;
   }
 
+  private refreshEditor () {
+    const td = this.table.td(this.ss.currentCellIndexes[0], this.ss.currentCellIndexes[1])
+    this.table.editor && this.table.editor.setValue(this.ss.currentCell())
+  }
+
   private render (): void {
     this.bindEl.appendChild(h().class('spreadsheet').children([
       h().class('spreadsheet-bars').children([
@@ -108,8 +112,18 @@ export class LocalSpreadsheet {
 
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     let JSControlData = new ControlData(k, v)
+    
     this.sendCellControl(stringify(JSControlData))
-    this.loadData(this.getDataFromCpp())
+    this.ss.data = this.getDataFromCpp()
+    // this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
+    if (k === 'paintformat') {
+      this.ss.copy()
+      this.table.dashedSelector.set(this.table.selector);
+      this.table.state = 'copyformat';
+    }
+    else if (k === "merge") this.ss.buildSelect(this.table.selector.startTarget, this.table.selector.endTarget)
+    this.table.reload()
+    this.ss.change(this.ss.data)
     return
     // console.log('Cell: ', k)
     // console.log('any: ', v)
@@ -135,7 +149,11 @@ export class LocalSpreadsheet {
     // console.log('editorbarChange')
     let JSControlData = new ControlData('text', v["text"])
     this.sendCellControl(stringify(JSControlData))
-    this.loadData(this.getDataFromCpp())
+    this.ss.data = this.getDataFromCpp()
+    // this.table.reload()
+    this.ss.change(this.ss.data)
+    this.refreshEditor()
+    this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
     return
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
@@ -145,9 +163,10 @@ export class LocalSpreadsheet {
     // console.log('editorChange')
     let JSControlData = new ControlData('text', v["text"]);
     this.sendCellControl(stringify(JSControlData));
-    this.loadData(this.getDataFromCpp())
-    return
+    this.ss.data = this.getDataFromCpp()
+    this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
     this.editorbar && this.editorbar.setValue(v)
+    return
   }
 
   private clickCell (rindex: number, cindex: number, v: Cell | null) { // 셀 편집 관련 다 여기 거쳐서 감
