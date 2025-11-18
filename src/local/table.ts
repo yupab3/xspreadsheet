@@ -404,14 +404,12 @@ export class Table {
   }
 
   private selectorChange () {
-    // if (this.state === 'copyformat') {
-    //   // console.log("3333333")
-    //   this.paste();
-    // }
     this.sendRange(stringify(this.ss.select));
-    this.ss.data = this.getDataFromCpp()
-    this.reload()
-    if (this.state === 'copyformat') this.state = null;
+    if (this.state === 'copyformat') {
+      this.ss.data = this.getDataFromCpp()
+      this.reload()
+      this.state = null;
+    }
     this.selector.reload();
     this.dashedSelector.hide();
   }
