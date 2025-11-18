@@ -37,6 +37,7 @@ export class LocalSpreadsheet {
   _change: (data: SpreadsheetData) => void = () => {}
   sendCellControl: (data: string) => void = () => {}
   getDataFromCpp: () => SpreadsheetData = () => this.ss.data
+  sendRange: (data: string) => void = () => {}
 
   constructor (el: HTMLElement, options: Options = {}) {
     this.bindEl = el
@@ -46,6 +47,7 @@ export class LocalSpreadsheet {
     this.bindEl && (this.bindEl.innerHTML = '')
 
     this.ss = new Spreadsheet(options);
+    this.ss.sendRange = (data) => this.sendRange(data)
     // console.log('::::>>>select:', this.ss.select)
     this.editorbar = new Editorbar()
     this.editorbar.change = (v) => this.editorbarChange(v)
@@ -78,6 +80,7 @@ export class LocalSpreadsheet {
     this.table.editorChange = (v) => this.editorChange(v)
     this.table.clickCell = (rindex, cindex, cell) => this.clickCell(rindex, cindex, cell)
     this.table.getDataFromCpp = () => this.getDataFromCpp()
+    this.table.sendRange = (data) => this.sendRange(data)
     this.render();
   }
 

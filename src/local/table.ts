@@ -63,6 +63,7 @@ export class Table {
   change: (data: SpreadsheetData) => void = () => {}
   editorChange: (v: Cell) => void = (v) => {}
   clickCell: (rindex: number, cindex: number, v: Cell | null) => void = (rindex, cindex, v) => {}
+  sendRange: (data: string) => void = () => {}
   sendColControl: (data: string) => void = () => {}
   sendRowControl: (data: string) => void = () => {}
   getDataFromCpp: () => SpreadsheetData = () => this.ss.data
@@ -403,10 +404,11 @@ export class Table {
   }
 
   private selectorChange () {
-    if (this.state === 'copyformat') {
-      // console.log("3333333")
-      this.paste();
-    }
+    // if (this.state === 'copyformat') {
+    //   // console.log("3333333")
+    //   this.paste();
+    // }
+    this.sendRange(stringify(this.ss.select));
   }
 
   private selectorChangeCopy (evt: any, arrow: 'bottom' | 'top' | 'left' | 'right', startRow: number, startCol: number, stopRow: number, stopCol: number) {
