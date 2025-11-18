@@ -408,8 +408,12 @@ export class Table {
     //   // console.log("3333333")
     //   this.paste();
     // }
-    if (this.state === 'copyformat') this.state = null;
     this.sendRange(stringify(this.ss.select));
+    this.ss.data = this.getDataFromCpp()
+    this.reload()
+    if (this.state === 'copyformat') this.state = null;
+    this.selector.reload();
+    this.dashedSelector.hide();
   }
 
   private selectorChangeCopy (evt: any, arrow: 'bottom' | 'top' | 'left' | 'right', startRow: number, startCol: number, stopRow: number, stopCol: number) {
