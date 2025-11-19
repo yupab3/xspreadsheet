@@ -124,7 +124,7 @@ export class LocalSpreadsheet {
       this.table.dashedSelector.set(this.table.selector);
       this.table.state = 'copyformat';
     }
-    else if (k === "merge") this.ss.buildSelect(this.table.selector.startTarget, this.table.selector.endTarget)
+    else if (k === "merge") this.table.selectorChange()
     this.table.reload()
     this.ss.change(this.ss.data)
     return

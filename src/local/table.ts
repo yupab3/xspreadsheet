@@ -403,7 +403,7 @@ export class Table {
     return td
   }
 
-  private selectorChange () {
+  selectorChange () {
     this.sendRange(stringify(this.ss.select));
     if (this.state === 'copyformat') {
       this.ss.data = this.getDataFromCpp()
