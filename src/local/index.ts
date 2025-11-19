@@ -125,7 +125,15 @@ export class LocalSpreadsheet {
       this.table.state = 'copyformat';
     }
     else if (k === "merge") this.table.selectorChange()
-    this.table.reload()
+    this.table.el.children([
+      this.table.colResizer && this.table.colResizer.el || '',
+      this.table.rowResizer && this.table.rowResizer.el || '',
+      this.table.buildFixedLeft(),
+      this.table.header = this.table.buildHeader(),
+      this.table.body = this.table.buildBody()
+    ]);
+    const [rindex, cindex] = this.ss.currentCellIndexes
+    this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), this.ss.currentCell())
     this.ss.change(this.ss.data)
     return
     // console.log('Cell: ', k)

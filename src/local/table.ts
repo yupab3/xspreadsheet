@@ -541,7 +541,7 @@ export class Table {
     ])
   }
 
-  private buildFixedLeft (): Element {
+  buildFixedLeft (): Element {
     const rows = this.ss.rows(this.options.mode === 'read');
     return h().class('spreadsheet-fixed')
     .style('width', '60px')
@@ -571,7 +571,7 @@ export class Table {
     ])
   }
 
-  private buildHeader (): Element {
+  buildHeader (): Element {
     const cols = this.ss.cols();
     const thead = h('thead').child(
       h('tr').children([
@@ -624,7 +624,7 @@ export class Table {
     this.editor && this.editor.set(td.el, this.ss.currentCell())
   }
 
-  private buildBody () {
+  buildBody () {
     const rows = this.ss.rows(this.options.mode === 'read');
     const cols = this.ss.cols();
 
