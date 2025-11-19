@@ -73,7 +73,7 @@ export class Toolbar {
     this.setCell(cell)
   }
 
-  private setCell (cell: Cell | null) {
+  setCell (cell: Cell | null) {
     this.currentCell = cell
     this.setCellStyle()
   }

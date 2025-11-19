@@ -63,10 +63,11 @@ export class Table {
   change: (data: SpreadsheetData) => void = () => {}
   editorChange: (v: Cell) => void = (v) => {}
   clickCell: (rindex: number, cindex: number, v: Cell | null) => void = (rindex, cindex, v) => {}
-  sendRange: (data: string) => void = () => {}
-  sendColControl: (data: string) => void = () => {}
-  sendRowControl: (data: string) => void = () => {}
+  sendRange: (data: string) => string = () => { return "" }
+  sendColControl: (data: string) => string = () => { return "" }
+  sendRowControl: (data: string) => string = () => { return "" }
   getDataFromCpp: () => SpreadsheetData = () => this.ss.data
+  refreshToolbar: () => void = () => {}
 
   constructor (ss: Spreadsheet, editorbar: Editorbar, public options: TableOption) {
     this.ss = ss;
@@ -294,13 +295,25 @@ export class Table {
   }
 
   undo (): boolean { // 콜백 부분만 지워버리기
-    this.ss.undo()
-    this.reload()
+    let rt = JSON.parse(this.ss.undo())
+    // this.reRender()
+    console.log("undo: ", rt)
+    for (const [r, c] of rt.trgt) {
+      this.reRenderCell(r, c)
+    }
+    this.editorbar && this.editorbar.setValue(this.ss.currentCell())
+    this.refreshToolbar()
     return this.ss.isUndo()
   }
   redo (): boolean { // 콜백 부분만 지워버리기
-    this.ss.redo()
-    this.reload()
+    let rt = JSON.parse(this.ss.redo())
+    // this.reRender()
+    console.log("redo: ", rt)
+    for (const [r, c] of rt.trgt) {
+      this.reRenderCell(r, c)
+    }
+    this.editorbar && this.editorbar.setValue(this.ss.currentCell())
+    this.refreshToolbar()
     return this.ss.isRedo()
   }
   private setTdStylesAndAttrsAndText (rindex: number, cindex: number, cell: Cell) {
@@ -403,11 +416,37 @@ export class Table {
     return td
   }
 
+  reRenderCell(r: number, c: number) {
+    const cl = this.ss.getCell(r, c)
+    if (cl) {
+      this.setTdStyles(r, c, cl)
+      this.setTdAttrs(r, c, cl)
+      this.td(r, c).html(this.renderCell(r, c, cl))
+    }
+  }
+
+  reRender() {
+    if (this.ss.select) {
+      const [sr, sc] = this.ss.select.start
+      const [er, ec] = this.ss.select.stop
+      for (let r = sr; r <= er; ++r) {
+        for (let c = sc; c <= ec; ++c)
+          this.reRenderCell(r, c)
+      }
+    }
+  }
+
   selectorChange () {
-    this.sendRange(stringify(this.ss.select));
+    let rt = JSON.parse(this.sendRange(stringify(this.ss.select)));
     if (this.state === 'copyformat') {
       this.ss.data = this.getDataFromCpp()
-      this.reload()
+      for (const [r, c] of rt.trgt) {
+        this.reRenderCell(r, c)
+      }
+      this.editor && this.editor.setStyle(this.ss.currentCell())
+      this.editorbar && this.editorbar.setValue(this.ss.currentCell())
+      // this.reRender()
+      this.refreshToolbar()
       this.state = null;
     }
     this.selector.reload();
@@ -422,7 +461,7 @@ export class Table {
     })
   }
 
-  private renderCell (rindex: number, cindex: number, cell: Cell | null): string {
+  renderCell (rindex: number, cindex: number, cell: Cell | null): string {
     if (cell) {
       const setKey = `${rindex}_${cindex}`
       // console.log('text:', setKey, cell.text && cell.text)
@@ -479,10 +518,10 @@ export class Table {
     this.changeRowHeight(rindex, h - 1);
   }
 
-  private setTdStyles (rindex: number, cindex: number, cell: Cell): Element {
+  setTdStyles (rindex: number, cindex: number, cell: Cell): Element {
     return this.td(rindex, cindex).styles(getStyleFromCell(cell), true)
   }
-  private setTdAttrs (rindex: number, cindex: number, cell: Cell): Element {
+  setTdAttrs (rindex: number, cindex: number, cell: Cell): Element {
     return this.td(rindex, cindex)
       .attr('rowspan', cell.rowspan || 1)
       .attr('colspan', cell.colspan || 1);
@@ -500,7 +539,7 @@ export class Table {
     this.selector.reload()
     this.editor && this.editor.reload()
   }
-  private changeRowResizer (index: number, distance: number) {
+  private changeRowResizer (index: number, distance: number) { // @@@@@@@@@@@@@@@@@@@@@@@@@@ 얘넨 작업 안 해도 괜찮음
     const h = this.ss.row(index).height + distance
     if (h <= this.ss.defaultRowHeight()) return
     let sendData = new ControlData(index, h);
@@ -513,7 +552,7 @@ export class Table {
     this.selector.reload()
     this.editor && this.editor.reload()
   }
-  private changeColResizer (index: number, distance: number) {
+  private changeColResizer (index: number, distance: number) { // @@@@@@@@@@@@@@@@@@@@@@@@@@ 얘넨 작업 안 해도 괜찮음
     const w = this.ss.col(index).width + distance
     if (w <= 50) return
     let sendData = new ControlData(index, w);

@@ -57,11 +57,10 @@ export class Spreadsheet {
   private cutSelect: Select | null = null;
 
   change: (data: SpreadsheetData) => void = () => {}
-  sendRange: (data: string) => void = () => {}
   undoChecker: () => boolean = () => false;
   redoChecker: () => boolean = () => false;
-  undoHandler: () => void = () => {};
-  redoHandler: () => void = () => {};
+  undoHandler: () => string = () => { return "" };
+  redoHandler: () => string = () => { return "" };
   getDataFromCpp: () => SpreadsheetData = () => this.data
 
   constructor (options: SpreadsheetOptions = {}) {
@@ -126,7 +125,6 @@ export class Spreadsheet {
     // console.log('row: ', minRow, maxRow, ', col:', minCol, maxCol, canotMerge)
     // 计算是否可以merge
     this.select = new Select([minRow, minCol], [maxRow, maxCol], !canotMerge)
-    // this.sendRange(stringify(this.select));
     return this.select;
   }
 
@@ -291,25 +289,27 @@ export class Spreadsheet {
   isRedo (): boolean {
     return this.redoChecker()
   }
-  redo (): boolean { // Redo 로직 부분 여기서 c++과 동기 필요
+  redo (): string { // Redo 로직 부분 여기서 c++과 동기 필요
     if (this.isRedo()) {
-      this.redoHandler()
+      let rt = this.redoHandler()
       this.data = this.getDataFromCpp()
       this.change(this.data)
+      return rt
     }
-    return this.isRedo()
+    return ""
   }
 
   isUndo (): boolean {
     return this.undoChecker()
   }
-  undo (): boolean { // Undo 로직 부분 여기서 c++과 동기 필요
+  undo (): string { // Undo 로직 부분 여기서 c++과 동기 필요
     if (this.isUndo()) {
-      this.undoHandler()
+      let rt = this.undoHandler()
       this.data = this.getDataFromCpp()
       this.change(this.data)
+      return rt
     }
-    return this.isUndo()
+    return ""
   }
   // 얘 로직 신경쓸 필요 없이 redo/undo c++측과 동기화 가능
   resetByHistory (v: History, cb: StandardCallback, state: 'undo' | 'redo') { // 실제로 동작하는 곳 History만 C++에서 받은 데이터로 만들고 나머지는 그대로 사용해도 괜찮을듯.

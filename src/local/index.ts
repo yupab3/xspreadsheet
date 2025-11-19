@@ -35,9 +35,8 @@ export class LocalSpreadsheet {
   options: Options;
 
   _change: (data: SpreadsheetData) => void = () => {}
-  sendCellControl: (data: string) => void = () => {}
+  sendCellControl: (data: string) => string = () => { return "" }
   getDataFromCpp: () => SpreadsheetData = () => this.ss.data
-  sendRange: (data: string) => void = () => {}
 
   constructor (el: HTMLElement, options: Options = {}) {
     this.bindEl = el
@@ -47,7 +46,6 @@ export class LocalSpreadsheet {
     this.bindEl && (this.bindEl.innerHTML = '')
 
     this.ss = new Spreadsheet(options);
-    this.ss.sendRange = (data) => this.sendRange(data)
     // console.log('::::>>>select:', this.ss.select)
     this.editorbar = new Editorbar()
     this.editorbar.change = (v) => this.editorbarChange(v)
@@ -80,7 +78,7 @@ export class LocalSpreadsheet {
     this.table.editorChange = (v) => this.editorChange(v)
     this.table.clickCell = (rindex, cindex, cell) => this.clickCell(rindex, cindex, cell)
     this.table.getDataFromCpp = () => this.getDataFromCpp()
-    this.table.sendRange = (data) => this.sendRange(data)
+    this.table.refreshToolbar = () => this.refreshToolbar()
     this.render();
   }
 
@@ -96,6 +94,14 @@ export class LocalSpreadsheet {
   change (cb: (data: SpreadsheetData) => void): LocalSpreadsheet { // 얘는 콜백 지정일 뿐, 아래쪽 4개의 change에서 c++과 셀 데이터 동기화 필요
     this._change = cb
     return this;
+  }
+
+  refreshToolbar () {
+    const [rindex, cindex] = this.ss.currentCellIndexes
+    const c = this.ss.currentCell()
+    if (c) this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), c)
+    this.toolbar?.setRedoAble(this.ss.isRedo())
+    this.toolbar?.setUndoAble(this.ss.isUndo())
   }
 
   private refreshEditor () {
@@ -116,7 +122,7 @@ export class LocalSpreadsheet {
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     let JSControlData = new ControlData(k, v)
     
-    this.sendCellControl(stringify(JSControlData))
+    let rt = JSON.parse(this.sendCellControl(stringify(JSControlData)));
     this.ss.data = this.getDataFromCpp()
     // this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
     if (k === 'paintformat') {
@@ -125,16 +131,13 @@ export class LocalSpreadsheet {
       this.table.state = 'copyformat';
     }
     else if (k === "merge") this.table.selectorChange()
-    this.table.el.children([
-      this.table.colResizer && this.table.colResizer.el || '',
-      this.table.rowResizer && this.table.rowResizer.el || '',
-      this.table.buildFixedLeft(),
-      this.table.header = this.table.buildHeader(),
-      this.table.body = this.table.buildBody()
-    ]);
-    const [rindex, cindex] = this.ss.currentCellIndexes
-    this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), this.ss.currentCell())
-    this.ss.change(this.ss.data)
+    for (const [r, c] of rt.trgt) {
+      this.table.reRenderCell(r, c)
+    }
+    this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
+    this.editorbar && this.editorbar.setValue(this.ss.currentCell())
+    this.refreshToolbar()
+    // this.ss.change(this.ss.data)
     return
     // console.log('Cell: ', k)
     // console.log('any: ', v)
