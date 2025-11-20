@@ -455,6 +455,11 @@ export class Table {
       this.setTdAttrs(r, c, cl)
       this.td(r, c).html(this.renderCell(r, c, cl))
     }
+    else {
+      this.setTdStyles(r, c, this.ss.data.cell)
+      this.setTdAttrs(r, c, this.ss.data.cell)
+      this.td(r, c).html(this.renderCell(r, c, this.ss.data.cell))
+    }
   }
 
   reRender() {
