@@ -296,10 +296,26 @@ export class Table {
 
   undo (): boolean { // 콜백 부분만 지워버리기
     let rt = JSON.parse(this.ss.undo())
-    // this.reRender()
-    console.log("undo: ", rt)
-    for (const [r, c] of rt.trgt) {
-      this.reRenderCell(r, c)
+    if (rt) {
+      if (rt.type == 'cells') {
+        for (const [r, c] of rt.trgt) {
+          this.reRenderCell(r, c)
+        }
+      }
+      else if (rt.type == 'row') {
+        let r = rt.trgt[0][0]
+        const firstTds = this.firsttds[r+'']
+        if (firstTds) {
+          firstTds.forEach(td => td.attr('height', this.ss.data.rows?.[r]?.height ?? 22))
+        }
+      }
+      else if (rt.type == 'col') {
+        let c = rt.trgt[0][1]
+        const cols = this.cols[c+'']
+        if (cols) {
+          cols.forEach(col => col.attr('width', this.ss.data.cols?.[c]?.width ?? 100))
+        }
+      }
     }
     this.editorbar && this.editorbar.setValue(this.ss.currentCell())
     this.refreshToolbar()
@@ -307,10 +323,26 @@ export class Table {
   }
   redo (): boolean { // 콜백 부분만 지워버리기
     let rt = JSON.parse(this.ss.redo())
-    // this.reRender()
-    console.log("redo: ", rt)
-    for (const [r, c] of rt.trgt) {
-      this.reRenderCell(r, c)
+    if (rt) {
+      if (rt.type == 'cells') {
+        for (const [r, c] of rt.trgt) {
+          this.reRenderCell(r, c)
+        }
+      }
+      else if (rt.type == 'row') {
+        let r = rt.trgt[0][0]
+        const firstTds = this.firsttds[r+'']
+        if (firstTds) {
+          firstTds.forEach(td => td.attr('height', this.ss.data.rows?.[r]?.height ?? 22))
+        }
+      }
+      else if (rt.type == 'col') {
+        let c = rt.trgt[0][1]
+        const cols = this.cols[c+'']
+        if (cols) {
+          cols.forEach(col => col.attr('width', this.ss.data.cols?.[c]?.width ?? 100))
+        }
+      }
     }
     this.editorbar && this.editorbar.setValue(this.ss.currentCell())
     this.refreshToolbar()
@@ -440,8 +472,10 @@ export class Table {
     let rt = JSON.parse(this.sendRange(stringify(this.ss.select)));
     if (this.state === 'copyformat') {
       this.ss.data = this.getDataFromCpp()
-      for (const [r, c] of rt.trgt) {
-        this.reRenderCell(r, c)
+      if (rt) {
+        for (const [r, c] of rt.trgt) {
+          this.reRenderCell(r, c)
+        }
       }
       this.editor && this.editor.setStyle(this.ss.currentCell())
       this.editorbar && this.editorbar.setValue(this.ss.currentCell())
@@ -539,7 +573,7 @@ export class Table {
     this.selector.reload()
     this.editor && this.editor.reload()
   }
-  private changeRowResizer (index: number, distance: number) { // @@@@@@@@@@@@@@@@@@@@@@@@@@ 얘넨 작업 안 해도 괜찮음
+  private changeRowResizer (index: number, distance: number) { // @@@@@@@@@@@@@@@@@@@@@@@@@@ 얘넨 작업 안 해도 괜찮음 안괜찮음 빨리하자 ㅁㄴㅇㄻㄴㅇㄹ redo/undo 쪽에서 처리해줘야 할듯 ui 갱신도 넣어주고
     const h = this.ss.row(index).height + distance
     if (h <= this.ss.defaultRowHeight()) return
     let sendData = new ControlData(index, h);
@@ -549,6 +583,7 @@ export class Table {
     if (firstTds) {
       firstTds.forEach(td => td.attr('height', h))
     }
+    this.refreshToolbar()
     this.selector.reload()
     this.editor && this.editor.reload()
   }
@@ -562,6 +597,7 @@ export class Table {
     if (cols) {
       cols.forEach(col => col.attr('width', w))
     }
+    this.refreshToolbar()
     this.selector.reload()
     this.editor && this.editor.reload()
   }

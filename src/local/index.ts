@@ -131,8 +131,10 @@ export class LocalSpreadsheet {
       this.table.state = 'copyformat';
     }
     else if (k === "merge") this.table.selectorChange()
-    for (const [r, c] of rt.trgt) {
-      this.table.reRenderCell(r, c)
+    if (rt) {
+      for (const [r, c] of rt.trgt) {
+        this.table.reRenderCell(r, c)
+      }
     }
     this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
     this.editorbar && this.editorbar.setValue(this.ss.currentCell())
