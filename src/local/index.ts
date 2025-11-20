@@ -130,7 +130,10 @@ export class LocalSpreadsheet {
       this.table.dashedSelector.set(this.table.selector);
       this.table.state = 'copyformat';
     }
-    else if (k === "merge") this.table.selectorChange()
+    else if (k === "merge") {
+      if (this.ss.select) this.ss.select.canMerge = !this.ss.select.canMerge
+      this.table.selectorChange()
+    }
     if (rt) {
       for (const [r, c] of rt.trgt) {
         this.table.reRenderCell(r, c)
