@@ -49,8 +49,8 @@ export class Spreadsheet {
   fonts: Array<Font>;
   formulas: Array<Formula>;
   data: SpreadsheetData;
-  private histories: Array<History> = [];
-  private histories2: Array<History> = [];
+  histories: Array<History> = [];
+  histories2: Array<History> = [];
   currentCellIndexes: [number, number] = [0, 0];
   select: Select | null = null;
   private copySelect: Select | null = null;
