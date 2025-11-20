@@ -67,7 +67,7 @@ export class LocalSpreadsheet {
       return 600
     }
     let bodyWidthFn = (): number => {
-      return 1000
+      return 1200
     }
     this.table = new Table(this.ss, this.editorbar, Object.assign({height: bodyHeightFn, width: bodyWidthFn, mode: this.options.mode}));
     this.table.change = (data) => {
