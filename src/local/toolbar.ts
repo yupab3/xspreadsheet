@@ -84,8 +84,8 @@ export class Toolbar {
     if (target) {
       // target.clearStyle()
       // target.styles(getStyleFromCell(currentCell))
-      this.elFormat.title.html(ss.getFormat(currentCell !== null && currentCell.format || defaultCell.format).title);
-      this.elFont.title.html(ss.getFont(currentCell !== null && currentCell.font || defaultCell.font).title);
+      this.elFormat.title.html((ss.getFormat(currentCell !== null && currentCell.format || defaultCell.format) || ss.getFormat(defaultCell.format)).title);
+      this.elFont.title.html((ss.getFont(currentCell !== null && currentCell.font || defaultCell.font) || ss.getFont(defaultCell.font)).title);
       this.elFontSize.title.html((currentCell !== null && currentCell.fontSize || defaultCell.fontSize) + '');
       this.elFontWeight.active(currentCell !== null && currentCell.bold !== undefined && currentCell.bold !== defaultCell.bold);
       this.elFontStyle.active(currentCell !== null && currentCell.italic !== undefined && currentCell.italic !== defaultCell.italic);
@@ -207,7 +207,7 @@ export class Toolbar {
   }
   private buildFormats (): Dropdown {
     const clickHandler = (it: Format) => {
-      this.elFormat.title.html(this.ss.getFormat(it.key).title);
+      this.elFormat.title.html((this.ss.getFormat(it.key) || this.ss.getFormat(this.defaultCell.format)).title);
       this.change('format', it.key)
     }
     return buildDropdown(this.ss.getFormat(this.defaultCell.format).title, '250px', [buildMenu().children(
