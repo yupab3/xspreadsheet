@@ -14,6 +14,8 @@ export interface Cell {
   rowspan?: number;
   colspan?: number;
   text?: string;
+  formulaText?: string;
+  bFormula?: boolean;
   merge?: [number, number];
   [key: string]: any
 }
@@ -34,7 +36,8 @@ export const defaultCell: Cell = {
   rowspan: 1,
   colspan: 1,
   text: '',
-
+  formulaText: '',
+  bFormula: false,
 }
 
 export function getStyleFromCell (cell: Cell | null): {[key: string]: string} {

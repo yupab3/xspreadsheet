@@ -5,6 +5,7 @@ import { Format } from '../core/format';
 import { Font } from '../core/font';
 import { Editor } from './editor';
 import { Selector } from './selector';
+import { Select } from '../core/select';
 import { Table } from './table';
 import { Toolbar } from './toolbar';
 import { Editorbar } from './editorbar';
@@ -33,13 +34,20 @@ export class LocalSpreadsheet {
 
   bindEl: HTMLElement
   options: Options;
-
+  inputRow: number;
+  inputCol: number;
+  inputData: string;
+  modeInput: boolean;
   _change: (data: SpreadsheetData) => void = () => {}
   sendCellControl: (data: string) => string = () => { return "" }
   getDataFromCpp: () => SpreadsheetData = () => this.ss.data
 
   constructor (el: HTMLElement, options: Options = {}) {
     this.bindEl = el
+    this.modeInput = false;
+    this.inputRow = 0;
+    this.inputCol = 0;
+    this.inputData = '';
     this.options = Object.assign({mode: 'design'}, options)
 
     // clear content in el
@@ -105,7 +113,7 @@ export class LocalSpreadsheet {
   }
 
   private refreshEditor () {
-    const td = this.table.td(this.ss.currentCellIndexes[0], this.ss.currentCellIndexes[1])
+    this.table.td(this.ss.currentCellIndexes[0], this.ss.currentCellIndexes[1])
     this.table.editor && this.table.editor.setValue(this.ss.currentCell())
   }
 
@@ -119,9 +127,19 @@ export class LocalSpreadsheet {
     ]).el);
   }
 
+  private setInputMode(v: Cell) {
+    let [r, c] = this.ss.currentCellIndexes
+    this.modeInput = true;
+    this.inputRow = r
+    this.inputCol = c
+    this.table.reRenderCell(r, c)
+    this.inputData = v['text'] ?? ""
+  }
+
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     let JSControlData = new ControlData(k, v)
     
+    console.log('toolbarChange')
     let rt = JSON.parse(this.sendCellControl(stringify(JSControlData)));
     this.ss.data = this.getDataFromCpp()
     // this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
@@ -159,19 +177,18 @@ export class LocalSpreadsheet {
       // console.log('paintformat')
       return ;
     }
-    // console.log('setCellAttr')
     this.table.setCellAttr(k, v)
   }
 
   private editorbarChange (v: Cell) { // 위쪽의 입력바를 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     // console.log('Cell: ', v)
-    // console.log('editorbarChange')
-    let JSControlData = new ControlData('text', v["text"])
-    this.sendCellControl(stringify(JSControlData))
-    this.ss.data = this.getDataFromCpp()
+    console.log('editorbarChange')
+    // let JSControlData = new ControlData('text', v["text"])
+    // this.sendCellControl(stringify(JSControlData))
+    // this.ss.data = this.getDataFromCpp()
     // this.table.reload()
-    this.ss.change(this.ss.data)
     this.refreshEditor()
+    this.setInputMode(v)
     this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
     return
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
@@ -179,22 +196,43 @@ export class LocalSpreadsheet {
 
   private editorChange (v: Cell) { // 셀을 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     // console.log('Cell: ', v)
-    // console.log('editorChange')
-    let JSControlData = new ControlData('text', v["text"]);
-    this.sendCellControl(stringify(JSControlData));
-    this.ss.data = this.getDataFromCpp()
+    console.log('editorChange')
+    // let JSControlData = new ControlData('text', v["text"]);
+    // this.sendCellControl(stringify(JSControlData));
+    // this.ss.data = this.getDataFromCpp()
+    this.setInputMode(v)
     this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
     this.editorbar && this.editorbar.setValue(v)
     return
   }
 
   private clickCell (rindex: number, cindex: number, v: Cell | null) { // 셀 편집 관련 다 여기 거쳐서 감
-    // console.log('rindex: ', rindex, ', cindex: ', cindex)
-    // console.log('Cell: ', v)
-    // console.log('clickCell')
-    const cols = this.ss.cols()
-    this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
-    this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
+    console.log('rindex: ', rindex, ', cindex: ', cindex)
+    console.log('Cell: ', v)
+    console.log('clickCell')
+    if (this.modeInput) {
+      let tmpSelect = new Select([this.inputRow, this.inputCol], [this.inputRow, this.inputCol], false)
+      this.table.sendRange(stringify(tmpSelect))
+      let JSControlData = new ControlData('text', this.inputData)
+      let rt = JSON.parse(this.sendCellControl(stringify(JSControlData)))
+      this.ss.data = this.getDataFromCpp()
+      this.modeInput = false
+      let renderRow
+      let renderCol
+      if (rt) {
+        for (const [r, c] of rt.trgt) {
+          this.table.reRenderCell(r, c)
+          renderRow = r;
+          renderCol = c;
+        }
+      }
+      this.table.editor && this.table.editor.setValue(this.ss.getCell(renderRow, renderCol))
+    }
+    else {
+      const cols = this.ss.cols()
+      this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
+      this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
+    }
   }
 
 }

@@ -62,7 +62,9 @@ export class Editor {
     this.setStyle(value);
     if (value) {
       this.value = value;
-      const text = value.text || '';
+      let text
+      if (value.bFormula) text = value.formulaText || '';
+      else text = value.text || '';
       this.textarea.val(text);
       this.textline.html(text);
       return text
@@ -115,7 +117,7 @@ export class Editor {
   }
 
   private autocomplete (v: string) {
-    if (v[0] === '=') {
+    if (v[0] === '=' && false) {
       if (!v.includes('(')) {
         const search = v.substring(1)
         // console.log(':::;search word:', search)

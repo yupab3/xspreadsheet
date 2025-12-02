@@ -25,7 +25,8 @@ export class Editorbar {
 
   setValue (value: Cell | null) {
     this.value = value
-    this.textarea.val(value && value.text || '')
+    if (value?.bFormula) this.textarea.val(value.formulaText)
+    else this.textarea.val(value && value.text || '')
   }
 
   input (evt: any) {

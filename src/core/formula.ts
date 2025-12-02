@@ -7,7 +7,7 @@ export interface Formula {
 }
 
 export const formulaFilterKey = (v: string, filter: (formula: Formula, param: string) => string) => {
-  if (v[0] === '=') {
+  if (v[0] === '=' && false) {
     const fx = v.substring(1, v.indexOf('('))
     for (let formula of formulas) {
       if (formula.key.toLowerCase() === fx.toLowerCase()) {

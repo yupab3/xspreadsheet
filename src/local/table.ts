@@ -504,7 +504,7 @@ export class Table {
     if (cell) {
       const setKey = `${rindex}_${cindex}`
       // console.log('text:', setKey, cell.text && cell.text)
-      if (cell.text && cell.text[0] === '=') {
+      if (cell.text && cell.text[0] === '=' && false) {
         this.formulaCellIndexs.add(setKey)
       } else {
         if (this.formulaCellIndexs.has(setKey)) {
@@ -701,6 +701,7 @@ export class Table {
 
   private editCell(rindex: number, cindex: number) {
     const td = this.td(rindex, cindex)
+    console.log('editCell - td:', td)
     this.editor && this.editor.set(td.el, this.ss.currentCell())
   }
 
