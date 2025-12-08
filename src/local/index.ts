@@ -228,11 +228,8 @@ export class LocalSpreadsheet {
       }
       this.table.editor && this.table.editor.setValue(this.ss.getCell(renderRow, renderCol))
     }
-    else {
-      const cols = this.ss.cols()
-      this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
-      this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
-    }
+    const cols = this.ss.cols()
+    this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
+    this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
   }
-
 }
