@@ -227,6 +227,7 @@ export class LocalSpreadsheet {
         }
       }
       this.table.editor && this.table.editor.setValue(this.ss.getCell(renderRow, renderCol))
+      return
     }
     const cols = this.ss.cols()
     this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
