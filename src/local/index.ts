@@ -140,9 +140,12 @@ export class LocalSpreadsheet {
     let JSControlData = new ControlData(k, v)
     
     // console.log('toolbarChange')
+    console.time("cppJob");
     let rt = JSON.parse(this.sendCellControl(stringify(JSControlData)));
     this.ss.data = this.getDataFromCpp()
+    console.timeEnd("cppJob");
     // this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
+    console.time("JSJob");
     if (k === 'paintformat') {
       this.ss.copy()
       this.table.dashedSelector.set(this.table.selector);
@@ -161,6 +164,7 @@ export class LocalSpreadsheet {
     // this.editorbar && this.editorbar.setValue(this.ss.currentCell())
     this.refreshToolbar()
     // this.ss.change(this.ss.data)
+    console.timeEnd("JSJob");
     return
     // console.log('Cell: ', k)
     // console.log('any: ', v)
