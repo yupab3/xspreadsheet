@@ -234,6 +234,6 @@ export class LocalSpreadsheet {
     }
     const cols = this.ss.cols()
     this.editorbar && this.editorbar.set(`${cols[cindex].title}${rindex + 1}`, v)
-    this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), v)
+    this.refreshToolbar();
   }
 }
