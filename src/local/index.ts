@@ -139,7 +139,7 @@ export class LocalSpreadsheet {
   private toolbarChange (k: keyof Cell, v: any) { // 툴바 관련 명령은 다 여기 거쳐서 감
     let JSControlData = new ControlData(k, v)
     
-    console.log('toolbarChange')
+    // console.log('toolbarChange')
     let rt = JSON.parse(this.sendCellControl(stringify(JSControlData)));
     this.ss.data = this.getDataFromCpp()
     // this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
@@ -182,7 +182,7 @@ export class LocalSpreadsheet {
 
   private editorbarChange (v: Cell) { // 위쪽의 입력바를 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     // console.log('Cell: ', v)
-    console.log('editorbarChange')
+    // console.log('editorbarChange')
     // let JSControlData = new ControlData('text', v["text"])
     // this.sendCellControl(stringify(JSControlData))
     // this.ss.data = this.getDataFromCpp()
@@ -196,7 +196,7 @@ export class LocalSpreadsheet {
 
   private editorChange (v: Cell) { // 셀을 눌러서 수행하는 모든 입력에 대해서 처리하는 부분
     // console.log('Cell: ', v)
-    console.log('editorChange')
+    // console.log('editorChange')
     // let JSControlData = new ControlData('text', v["text"]);
     // this.sendCellControl(stringify(JSControlData));
     // this.ss.data = this.getDataFromCpp()
@@ -207,9 +207,9 @@ export class LocalSpreadsheet {
   }
 
   private clickCell (rindex: number, cindex: number, v: Cell | null) { // 셀 편집 관련 다 여기 거쳐서 감
-    console.log('rindex: ', rindex, ', cindex: ', cindex)
-    console.log('Cell: ', v)
-    console.log('clickCell')
+    // console.log('rindex: ', rindex, ', cindex: ', cindex)
+    // console.log('Cell: ', v)
+    // console.log('clickCell')
     if (this.modeInput) {
       let tmpSelect = new Select([this.inputRow, this.inputCol], [this.inputRow, this.inputCol], false)
       this.table.sendRange(stringify(tmpSelect))

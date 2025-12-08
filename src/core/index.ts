@@ -81,8 +81,8 @@ export class Spreadsheet {
   }
 
   logHistories(): void {
-    console.log("Undo: ", this.histories);
-    console.log("Redo: ", this.histories2);
+    // console.log("Undo: ", this.histories);
+    // console.log("Redo: ", this.histories2);
   }
 
   // build select
