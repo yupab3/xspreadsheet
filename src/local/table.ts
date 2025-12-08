@@ -88,6 +88,7 @@ export class Table {
     }
 
     this.selector = new Selector(this.ss, this);
+    this.selector.sendRange = (data: string) => this.sendRange(data);
     this.selector.change = () => this.selectorChange();
     this.selector.changeCopy = (e, arrow, startRow, startCol, stopRow, stopCol) => {
       this.selectorChangeCopy(e, arrow, startRow, startCol, stopRow, stopCol);

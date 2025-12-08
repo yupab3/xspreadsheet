@@ -3,6 +3,8 @@ import { bind, mouseMoveUp } from './event';
 import { Spreadsheet } from "../core/index";
 import { Table } from './table';
 
+import stringify from 'fast-safe-stringify';
+
 export class Selector {
   topEl: Element;
   rightEl: Element;
@@ -18,6 +20,7 @@ export class Selector {
   endTarget: any;
 
   change: () => void = () => {};
+  sendRange: (data: string) => string = () => { return "" }
   changeCopy: (evt: any, arrow: 'bottom' | 'top' | 'left' | 'right', startRow: number, startCol: number, stopRow: number, stopCol: number) => void 
     = (evt, arrow, startRow, startCol, stopRow, stopCol) => {};
 
@@ -48,6 +51,7 @@ export class Selector {
       if (evt.shiftKey) {
         this.endTarget = evt.target
         this.setOffset()
+        this.sendRange(stringify(this.ss.select))
         return
       }
       // Object.assign(this, {startTarget: evt.target, endTarget: evt.target})
