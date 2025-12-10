@@ -114,12 +114,8 @@ export class LocalSpreadsheet {
   }
 
   private refreshEditor (v: Cell) {
-    if (this.ss.currentCellIndexes) {
-      if (this.editorbar) this.editorbar.setValue(v)
-    }
-    this.table.editor && this.table.editor.setValue(v)
-    this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
     let [r, c] = this.ss.currentCellIndexes
+    this.ss.cellText(v.text, () => {})
     this.table.reRenderCell(r, c)
   }
 
