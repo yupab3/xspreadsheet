@@ -162,7 +162,7 @@ export class LocalSpreadsheet {
         this.table.reRenderCell(r, c)
       }
     }
-    // this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
+    this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
     // this.editorbar && this.editorbar.setValue(this.ss.currentCell())
     this.refreshToolbar()
     // this.ss.change(this.ss.data)
