@@ -108,6 +108,7 @@ export class LocalSpreadsheet {
     const [rindex, cindex] = this.ss.currentCellIndexes
     const c = this.ss.currentCell()
     if (c) this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), c)
+    else this.toolbar && this.toolbar.set(this.table.td(rindex, cindex), this.ss.data.cell)
     this.toolbar?.setRedoAble(this.ss.isRedo())
     this.toolbar?.setUndoAble(this.ss.isUndo())
   }
