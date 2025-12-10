@@ -113,11 +113,6 @@ export class LocalSpreadsheet {
     this.toolbar?.setUndoAble(this.ss.isUndo())
   }
 
-  private refreshEditor () {
-    this.table.td(this.ss.currentCellIndexes[0], this.ss.currentCellIndexes[1])
-    this.table.editor && this.table.editor.setValue(this.ss.currentCell())
-  }
-
   private render (): void {
     this.bindEl.appendChild(h().class('spreadsheet').children([
       h().class('spreadsheet-bars').children([
@@ -192,9 +187,9 @@ export class LocalSpreadsheet {
     // this.sendCellControl(stringify(JSControlData))
     // this.ss.data = this.getDataFromCpp()
     // this.table.reload()
-    this.refreshEditor()
+    this.table.editCurCell(this.table.td(this.ss.currentCellIndexes[0], this.ss.currentCellIndexes[1]).el, v)
     this.setInputMode(v)
-    this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
+    this.table.editor && this.table.editor.setStyle(v)
     return
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }

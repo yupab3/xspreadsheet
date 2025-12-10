@@ -700,6 +700,10 @@ export class Table {
     this.clickCell(rindex, cindex, cCell)
   }
 
+  editCurCell(el: HTMLElement, v: Cell | null) {
+    this.editor && this.editor.set(el, v)
+  }
+
   private editCell(rindex: number, cindex: number) {
     const td = this.td(rindex, cindex)
     console.log('editCell - td:', td)
