@@ -118,6 +118,7 @@ export class LocalSpreadsheet {
       if (this.editorbar) this.editorbar.setValue(v)
     }
     this.table.editor && this.table.editor.setValue(v)
+    this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
   }
 
   private render (): void {
