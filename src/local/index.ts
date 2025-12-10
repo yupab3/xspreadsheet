@@ -119,6 +119,8 @@ export class LocalSpreadsheet {
     }
     this.table.editor && this.table.editor.setValue(v)
     this.table.editor && this.table.editor.setStyle(this.ss.currentCell())
+    let [r, c] = this.ss.currentCellIndexes
+    this.table.reRenderCell(r, c)
   }
 
   private render (): void {
@@ -195,8 +197,8 @@ export class LocalSpreadsheet {
     // this.sendCellControl(stringify(JSControlData))
     // this.ss.data = this.getDataFromCpp()
     // this.table.reload()
-    this.refreshEditor(v)
     this.setInputMode(v)
+    this.refreshEditor(v)
     return
     this.table.setValueWithText(v) // 여기서 히스토리 저장함 table에서 
   }
